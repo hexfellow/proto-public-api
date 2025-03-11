@@ -19,6 +19,12 @@ message PanelConfig {
     BaseType base_type = 2;
 }
 
+message PanelConstants{
+    bytes uid = 1;
+    string git_hash = 2;
+    string build_time = 3;
+}
+
 // Motor
 message MotorTarget{
     oneof target{

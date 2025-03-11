@@ -3,8 +3,12 @@ package base_backend;
 import "types.proto"; 
 
 message Up {
-    BaseStatus base_status = 1;
-    PanelConfig panel_config = 2;
-    GamepadRead gamepad_read = 3;
+    // Though in proto3, Message Type Fields Always Have Field Presence
+    // We make it explicit to hint that only in some of the frames will some of the fields be filled.
+    // To save bandwidth.
+    optional BaseStatus base_status = 1;
+    optional PanelConfig panel_config = 2;
+    optional GamepadRead gamepad_read = 3;
+    optional PanelConstants panel_constants = 4;
     repeated MotorStatus motor_status = 11;
 }
