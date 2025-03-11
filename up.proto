@@ -6,4 +6,5 @@ message Up {
     BaseStatus base_status = 1;
     PanelConfig panel_config = 2;
     GamepadRead gamepad_read = 3;
+    repeated MotorStatus motor_status = 11;
 }

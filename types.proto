@@ -74,7 +74,6 @@ message BaseStatus {
     float battery_voltage = 4;                  // V
     uint32 battery_thousandth = 5;             // 1/1000
 
-    repeated MotorStatus motor_status = 11;
     optional string emergency_stop_reason = 12;
     // If this is true, the emergency stop can be cleared remotely.
     bool emergency_stop_is_remotely_clearable = 13;
