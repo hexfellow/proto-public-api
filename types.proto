@@ -46,13 +46,15 @@ message MotorStatus {
     int64 position = 4;
     // Number of pulses per rotation
     int64 pulse_per_rotation = 5;
-    repeated MotorError error = 8;
-    MotorTarget currnet_target = 9;
+    double wheel_radius = 6;
 
-    optional float driver_temperature = 6;
-    optional float motor_temperature = 7;
+    repeated MotorError error = 7;
+    MotorTarget currnet_target = 8;
+
+    optional float driver_temperature = 11;
+    optional float motor_temperature = 12;
     // current suppiled voltage
-    optional float voltage = 10;
+    optional float voltage = 13;
 }
 
 
