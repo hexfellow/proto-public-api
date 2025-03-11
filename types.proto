@@ -68,23 +68,17 @@ enum BaseState {
 message BaseStatus {
     BaseType type = 1;
     BaseState state = 2;
-    // m/s
-    double speed_x = 3;
-    double speed_y = 4;
-    // rad/s
-    double speed_z = 5;
-    bool remote_plugged_in = 6;
 
-    // PC has initialized the vehicle, and the vehicle is ready to be used if no error or emergency stop is triggered.
-    bool initialized = 7;
-
-    float battery_voltage = 8;                  // V
-    uint32 battery_thousandth = 9;             // 1/1000
+    // Weather the API control is initialized.
+    bool api_control_initialized = 3;
+    float battery_voltage = 4;                  // V
+    uint32 battery_thousandth = 5;             // 1/1000
 
     repeated MotorStatus motor_status = 11;
-
     optional string emergency_stop_reason = 12;
-    optional string warning_reason = 13;
+    // If this is true, the emergency stop can be cleared remotely.
+    bool emergency_stop_is_remotely_clearable = 13;
+    optional string warning_reason = 14;
 }
 
 message PanelCommand {
@@ -97,9 +91,14 @@ message PanelCommand {
 
 message BaseCommand {
     oneof command{
-        bool initialize = 1;
+        // Only after api_control_initialize is set, can the vehicle be controlled by the API.
+        bool api_control_initialize = 1;
+        // If currently has a clearable emergency stop, the emergency stop state will be cleared.
+        bool clear_emergency_stop = 2;
+        // By sending this, will trigger a remote clearable emergency stop with this reason.
+        string emergency_stop = 3;
     }
-    repeated MotorTarget motor_target = 2;
+    repeated MotorTarget motor_target = 11;
 }
 
 message GamepadRead {
