@@ -5,4 +5,5 @@ import "types.proto";
 message Up {
     BaseStatus base_status = 1;
     PanelConfig panel_config = 2;
+    GamepadRead gamepad_read = 3;
 }
