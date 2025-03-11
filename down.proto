@@ -1,0 +1,10 @@
+syntax = "proto3";
+package base_backend;
+import "types.proto"; 
+
+message Down {
+    oneof down{
+        PanelCommand panel_command = 1;
+        BaseCommand base_command = 2;
+    }
+}

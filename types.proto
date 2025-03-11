@@ -1,0 +1,126 @@
+syntax = "proto3";
+package base_backend;
+
+// Panel Config
+enum BaseType {
+    Unknown = 0;
+    TripleOmniWheelLRDriver = 1;
+    SteeringWheelPrototype = 2;
+    Mark1DiffBBDriver = 3;
+}
+
+enum Language {
+    English = 0;
+    Chinese = 1;
+}
+
+message PanelConfig {
+    Language language = 1;
+    BaseType base_type = 2;
+}
+
+// Motor
+message MotorTarget{
+    oneof target{
+        double torque = 1;  // Nm
+        double speed = 2;   // rad/s
+    }
+}
+
+enum MotorError{
+    CommunicationError = 0;
+    OverCurrent = 1;
+    OverVoltage = 2;
+    UnderVoltage = 3;
+    MotorOverTemperature = 4;
+    DriverOverTemperature = 5;
+    GeneralError = 6;
+}
+
+message MotorStatus {
+    // Nm
+    double torque = 2; 
+    // rad/s, clockwise is positive
+    double speed = 3;
+    // encoder position
+    int64 position = 4;
+    // Number of pulses per rotation
+    int64 pulse_per_rotation = 5;
+    repeated MotorError error = 8;
+    MotorTarget currnet_target = 9;
+
+    optional float driver_temperature = 6;
+    optional float motor_temperature = 7;
+    // current suppiled voltage
+    optional float voltage = 10;
+}
+
+
+// Base State
+enum BaseState {
+    Parked = 0;
+    AlgrithmControl = 1;
+    OvertakeSpeedControl = 2;
+    OvertakeZeroResistanceControl = 3;
+    EmergencyStop = 4;
+}
+
+message BaseStatus {
+    BaseType type = 1;
+    BaseState state = 2;
+    // m/s
+    double speed_x = 3;
+    double speed_y = 4;
+    // rad/s
+    double speed_z = 5;
+    bool remote_plugged_in = 6;
+
+    // PC has initialized the vehicle, and the vehicle is ready to be used if no error or emergency stop is triggered.
+    bool initialized = 7;
+
+    float battery_voltage = 8;                  // V
+    uint32 battery_thousandth = 9;             // 1/1000
+
+    repeated MotorStatus motor_status = 11;
+
+    optional string emergency_stop_reason = 12;
+    optional string warning_reason = 13;
+}
+
+message PanelCommand {
+    oneof command{
+        bool reset_all_settings = 1;
+        bool reset_network_settings = 2;
+        PanelConfig config = 3;
+    }
+}
+
+message BaseCommand {
+    oneof command{
+        bool initialize = 1;
+    }
+    repeated MotorTarget motor_target = 2;
+}
+
+message GamepadRead {
+    float left_stick_x = 1;
+    float left_stick_y = 2;
+    float right_stick_x = 3;
+    float right_stick_y = 4;
+    bool left_bumper = 5;
+    bool right_bumper = 6;
+    float left_trigger = 7;
+    float right_trigger = 8;
+    bool a_button = 9;
+    bool b_button = 10;
+    bool x_button = 11;
+    bool y_button = 12;
+    bool select_button = 13;
+    bool start_button = 14;
+    bool left_stick_button = 15;
+    bool right_stick_button = 16;
+    bool dpad_up = 17;
+    bool dpad_down = 18;
+    bool dpad_left = 19;
+    bool dpad_right = 20;
+}
