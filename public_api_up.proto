@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "public_api_types.proto"; 
+
+message APIUp {
+    BaseStatus base_status = 1;
+    repeated MotorStatus motor_status = 2;
+}
