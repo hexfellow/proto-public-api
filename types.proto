@@ -14,9 +14,42 @@ enum Language {
     Chinese = 1;
 }
 
+message WiFiConfigAP {
+    string ssid = 1;
+    string password = 2;
+}
+
+message WiFiConfigSTA {
+    string ssid = 1;
+    string password = 2;
+}
+
+message ETHConfigDHCPClient{
+    
+}
+
+message ETHConfigStaticIP{
+    string ip = 1;
+    string netmask = 2;
+    optional string gateway = 3;
+    optional string dns = 4;
+}
+
+message NetworkConfig {
+    oneof eth_config{
+        ETHConfigDHCPClient dhcp = 1;
+        ETHConfigStaticIP static_ip = 2;
+    }
+    oneof wifi_config{
+        WiFiConfigAP ap = 11;
+        WiFiConfigSTA sta = 12;
+    }
+}
+
 message PanelConfig {
     Language language = 1;
     BaseType base_type = 2;
+    NetworkConfig network = 3;
 }
 
 message PanelConstants{
@@ -63,7 +96,6 @@ message MotorStatus {
     optional float voltage = 13;
 }
 
-
 // Base State
 enum BaseState {
     Parked = 0;
@@ -71,6 +103,20 @@ enum BaseState {
     OvertakeSpeedControl = 2;
     OvertakeZeroResistanceControl = 3;
     EmergencyStop = 4;
+}
+
+enum EmergencyStopCategory {
+    EmergencyStopButton = 0;
+    MotorHasError = 1;
+    BatteryFail = 2;
+    GamepadTriggered = 3;
+    UnknownEmergencyStopCategory = 4;
+}
+
+message EmergencyStopDetail {
+    string reason = 1;
+    EmergencyStopCategory category = 2;
+    bool is_remotely_clearable = 3;
 }
 
 message BaseStatus {
@@ -82,9 +128,7 @@ message BaseStatus {
     float battery_voltage = 4;                  // V
     uint32 battery_thousandth = 5;             // 1/1000
 
-    optional string emergency_stop_reason = 12;
-    // If this is true, the emergency stop can be cleared remotely.
-    bool emergency_stop_is_remotely_clearable = 13;
+    optional EmergencyStopDetail emergency_stop_detail = 12;
     optional string warning_reason = 14;
 }
 
@@ -102,8 +146,8 @@ message BaseCommand {
         bool api_control_initialize = 1;
         // If currently has a clearable emergency stop, the emergency stop state will be cleared.
         bool clear_emergency_stop = 2;
-        // By sending this, will trigger a remote clearable emergency stop with this reason.
-        string emergency_stop = 3;
+        // By sending this, will trigger a remote clearable emergency stop with this detail. is_remotely_clearable MUST be true. 
+        EmergencyStopDetail trigger_emergency_stop = 3;
     }
     repeated MotorTarget motor_target = 11;
 }
