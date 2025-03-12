@@ -65,6 +65,7 @@ enum EmergencyStopCategory {
     BatteryFail = 2;
     GamepadTriggered = 3;
     UnknownEmergencyStopCategory = 4;
+    APICommunicationTimeout = 5;
 }
 
 message EmergencyStopDetail {
