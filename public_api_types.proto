@@ -40,7 +40,7 @@ message MotorStatus {
     // encoder position
     int64 position = 4;
     // Number of pulses per rotation
-    int64 pulse_per_rotation = 5;
+    uint32 pulse_per_rotation = 5;
     double wheel_radius = 6;
 
     repeated MotorError error = 7;
