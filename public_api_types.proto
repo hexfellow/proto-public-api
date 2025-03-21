@@ -84,6 +84,7 @@ message BaseStatus {
     bool api_control_initialized = 3;
     float battery_voltage = 4;                  // V
     uint32 battery_thousandth = 5;              // 1/1000
+    optional bool battery_charging = 6;
 
     optional EmergencyStopDetail emergency_stop_detail = 12;
     optional string warning_reason = 14;
