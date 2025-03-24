@@ -15,7 +15,9 @@ message SingleMotorTarget{
     oneof target{
         double torque = 1;  // Nm
         double speed = 2;   // rad/s
+        int64 position = 3; // encoder position
     }
+    bool brake = 11;
 }
 
 message MotorTargets {
@@ -50,6 +52,7 @@ message MotorStatus {
     optional float motor_temperature = 12;
     // current suppiled voltage
     optional float voltage = 13;
+    optional bool brake = 14;
 }
 
 // Base State

@@ -3,6 +3,9 @@ syntax = "proto3";
 import "public_api_types.proto"; 
 
 message APIUp {
-    BaseStatus base_status = 1;
+    oneof status{
+        BaseStatus base_status = 1;
+        // todo add arm, lifter, etc, if needed
+    }
     repeated MotorStatus motor_status = 2;
 }
