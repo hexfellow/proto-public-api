@@ -17,7 +17,7 @@ message SingleMotorTarget{
         double speed = 2;   // rad/s
         int64 position = 3; // encoder position
     }
-    bool brake = 11;
+    optional bool brake = 11;
 }
 
 message MotorTargets {
