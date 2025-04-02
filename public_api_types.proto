@@ -6,8 +6,9 @@ enum BaseType {
     TripleOmniWheelLRDriver = 1;
     SteeringWheelPrototype = 2;
     Mark1DiffBBDriver = 3;
+    Mark1McnmBBDriver = 4;
     // Special Mode. Working purely as a can bus forwarder.
-    PureForwardOnly = 4;
+    PureForwardOnly = 100;
 }
 
 // Motor
