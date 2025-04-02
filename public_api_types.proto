@@ -4,9 +4,12 @@ syntax = "proto3";
 enum BaseType {
     Unknown = 0;
     TripleOmniWheelLRDriver = 1;
-    SteeringWheelPrototype = 2;
-    Mark1DiffBBDriver = 3;
-    Mark1McnmBBDriver = 4;
+    SteeringWheel3Module = 2;
+    SteeringWheel4Module = 3;
+    SteeringWheelSingleAModule = 4;
+    SteeringWheelSingleBModule = 5;
+    Mark1DiffBBDriver = 6;
+    Mark1McnmBBDriver = 7;
     // Special Mode. Working purely as a can bus forwarder.
     PureForwardOnly = 100;
 }
