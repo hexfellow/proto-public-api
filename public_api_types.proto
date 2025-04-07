@@ -41,7 +41,7 @@ enum MotorError{
 message MotorStatus {
     // Nm
     double torque = 2; 
-    // rad/s, clockwise is positive
+    // rad/s, clockwise is positive. Looking from output axis towards motor.
     double speed = 3;
     // encoder position
     int64 position = 4;
