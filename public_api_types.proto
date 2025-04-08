@@ -79,6 +79,7 @@ enum ParkingStopCategory {
     GamepadTriggered = 3;
     UnknownParkingStopCategory = 4;
     APICommunicationTimeout = 5;
+    LimitSwitchTriggered = 6;
 }
 
 message ParkingStopDetail {
@@ -124,14 +125,18 @@ message LinearLiftStatus {
     bool calibrated = 1;
     bool calibrating = 2;
     int64 max_pos = 3;
+    optional ParkingStopDetail parking_stop_detail = 10;
 }
 
 message LinearLiftCommand {
     oneof command{
+        // No matter calibrate is true or false, will always start calibration when oneof selects this.
         bool calibrate = 1;
         // Encoder position.
         // You can calculate this from meters by multiplying with pulse_per_meter.
         int64 target_pos = 2;
+        // No matter brake is true or false, brake will be applied when oneof selects this.
+        // If send other oneof, brake will be released.
         bool brake = 3;
     }
 }
