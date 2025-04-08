@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 
-enum BaseType {
+enum RobotType {
     Unknown = 0;
     TripleOmniWheelLRDriver = 1;
     SteeringWheel3Module = 2;
@@ -10,6 +10,9 @@ enum BaseType {
     SteeringWheelSingleBModule = 5;
     Mark1DiffBBDriver = 6;
     Mark1McnmBBDriver = 7;
+    // Linear Lifts can not be force controlled.
+    // If you want force controlled lifts, consider ForceControlledLift series.
+    LinearLiftISVLDriver = 8;
     // Special Mode. Working purely as a can bus forwarder.
     PureForwardOnly = 100;
 }
@@ -42,10 +45,12 @@ message MotorStatus {
     // Nm
     double torque = 2; 
     // rad/s, clockwise is positive. Looking from output axis towards motor.
+    // m/s, direction is not defined, for linear motor
     double speed = 3;
     // encoder position
     int64 position = 4;
     // Number of pulses per rotation
+    // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
     double wheel_radius = 6;
 
@@ -83,17 +88,16 @@ message EmergencyStopDetail {
 }
 
 message BaseStatus {
-    BaseType type = 1;
-    BaseState state = 2;
+    BaseState state = 1;
 
     // Weather the API control is initialized.
-    bool api_control_initialized = 3;
-    float battery_voltage = 4;                  // V
-    uint32 battery_thousandth = 5;              // 1/1000
-    optional bool battery_charging = 6;
+    bool api_control_initialized = 2;
+    float battery_voltage = 3;                  // V
+    uint32 battery_thousandth = 4;              // 1/1000
 
-    optional EmergencyStopDetail emergency_stop_detail = 12;
-    optional string warning_reason = 14;
+    optional bool battery_charging = 10;
+    optional EmergencyStopDetail emergency_stop_detail = 11;
+    optional string warning_reason = 12;
 }
 
 message BaseCommand {
@@ -105,5 +109,22 @@ message BaseCommand {
         // By sending this, will trigger a remote clearable emergency stop with this detail. is_remotely_clearable MUST be true. 
         EmergencyStopDetail trigger_emergency_stop = 3;
         MotorTargets motor_targets = 4;
+    }
+}
+
+// Read motor_status of APIUp to get current position
+message LinearLiftStatus {
+    bool calibrated = 1;
+    bool calibrating = 2;
+    int64 max_pos = 3;
+}
+
+message LinearLiftCommand {
+    oneof command{
+        bool calibrate = 1;
+        // Encoder position.
+        // You can calculate this from meters by multiplying with pulse_per_meter.
+        int64 target_pos = 2;
+        bool brake = 3;
     }
 }

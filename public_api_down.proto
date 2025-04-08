@@ -4,6 +4,11 @@ import "public_api_types.proto";
 
 message APIDown {
     oneof down{
-        BaseCommand base_command = 2;
+        BaseCommand base_command = 1;
+        LinearLiftCommand linear_lift_command = 2;
     }
+    // motor_targets is not here because some commands should not require to change motor state.
+    // Also certain robot types may be inapplicable to full motor commands, 
+    //    like LinearLiftISVLDriver, is a position control only robot.
+    //    Or, PureForwardOnly. It is just a can bus forwarder, and does not have motor commands.
 }
