@@ -72,18 +72,18 @@ enum BaseState {
     EmergencyStop = 4;
 }
 
-enum EmergencyStopCategory {
+enum ParkingStopCategory {
     EmergencyStopButton = 0;
     MotorHasError = 1;
     BatteryFail = 2;
     GamepadTriggered = 3;
-    UnknownEmergencyStopCategory = 4;
+    UnknownParkingStopCategory = 4;
     APICommunicationTimeout = 5;
 }
 
 message ParkingStopDetail {
     string reason = 1;
-    EmergencyStopCategory category = 2;
+    ParkingStopCategory category = 2;
     bool is_remotely_clearable = 3;
 }
 
