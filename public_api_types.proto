@@ -87,6 +87,11 @@ message ParkingStopDetail {
     bool is_remotely_clearable = 3;
 }
 
+enum WarningCategory {
+    UnknownWarningCategory = 0;
+    BatteryLow = 1;
+}
+
 message BaseStatus {
     BaseState state = 1;
 
@@ -97,7 +102,7 @@ message BaseStatus {
 
     optional bool battery_charging = 10;
     optional ParkingStopDetail parking_stop_detail = 11;
-    optional string warning_reason = 12;
+    optional WarningCategory warning = 12;
 }
 
 message BaseCommand {
