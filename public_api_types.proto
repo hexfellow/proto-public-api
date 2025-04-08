@@ -81,7 +81,7 @@ enum EmergencyStopCategory {
     APICommunicationTimeout = 5;
 }
 
-message EmergencyStopDetail {
+message ParkingStopDetail {
     string reason = 1;
     EmergencyStopCategory category = 2;
     bool is_remotely_clearable = 3;
@@ -96,7 +96,7 @@ message BaseStatus {
     uint32 battery_thousandth = 4;              // 1/1000
 
     optional bool battery_charging = 10;
-    optional EmergencyStopDetail emergency_stop_detail = 11;
+    optional ParkingStopDetail parking_stop_detail = 11;
     optional string warning_reason = 12;
 }
 
@@ -104,10 +104,12 @@ message BaseCommand {
     oneof command{
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
-        // If currently has a clearable emergency stop, the emergency stop state will be cleared.
-        bool clear_emergency_stop = 2;
-        // By sending this, will trigger a remote clearable emergency stop with this detail. is_remotely_clearable MUST be true. 
-        EmergencyStopDetail trigger_emergency_stop = 3;
+        // If currently has a clearable parking stop, the parking stop state will be cleared.
+        bool clear_parking_stop = 2;
+        // By sending this, will trigger a remote clearable parking stop with this detail. is_remotely_clearable MUST be true. 
+        // WARNING: The ParkingStop will try to stop the vehicle, BUT MIGHT FAIL, in worst case even out of control.
+        // DO NOT USE THIS AS EMERGENCY STOP. Use the physical emergency stop button in case of emergency.
+        ParkingStopDetail trigger_parking_stop = 3;
         MotorTargets motor_targets = 4;
     }
 }
