@@ -44,7 +44,8 @@ enum MotorError{
 message MotorStatus {
     // Nm
     double torque = 2; 
-    // rad/s, clockwise is positive. Looking from output axis towards motor.
+    // In general positivive is counter-clockwise(Right hand). But view angle is defined differently for different robot types.
+    // View XSTD guide for detailed definition of positive direction.
     // m/s, direction is not defined, for linear motor
     double speed = 3;
     // encoder position
