@@ -2,28 +2,49 @@ syntax = "proto3";
 
 //////// Overall types //////////
 enum RobotType {
-    Unknown = 0;
-    TripleOmniWheelLRDriver = 1;
-    SteeringWheel3Module = 2;
-    SteeringWheel4Module = 3;
-    SteeringWheelSingleAModule = 4;
-    SteeringWheelSingleBModule = 5;
-    Mark1DiffBBDriver = 6;
-    Mark1McnmBBDriver = 7;
+    RtUnknown = 0;
+    RtTripleOmniWheelLRDriver = 1;
+    RtSteeringWheel3Module = 2;
+    RtSteeringWheel4Module = 3;
+    RtSteeringWheelSingleAModule = 4;
+    RtSteeringWheelSingleBModule = 5;
+    RtMark1DiffBBDriver = 6;
+    RtMark1McnmBBDriver = 7;
     // Linear Lifts can not be force controlled.
     // If you want force controlled lifts, consider ForceControlledLift series.
-    LinearLiftISVLDriver = 8;
+    RtLinearLiftISVLDriver = 8;
     // Special Mode. Working purely as a can bus forwarder.
-    PureForwardOnly = 100;
+    RtPureForwardOnly = 100;
 }
 
-// Motor
+enum ParkingStopCategory {
+    PscEmergencyStopButton = 0;
+    PscMotorHasError = 1;
+    PscBatteryFail = 2;
+    PscGamepadTriggered = 3;
+    PscUnknownParkingStopCategory = 4;
+    PscAPICommunicationTimeout = 5;
+    PscLimitSwitchTriggered = 6;
+}
+
+message ParkingStopDetail {
+    string reason = 1;
+    ParkingStopCategory category = 2;
+    bool is_remotely_clearable = 3;
+}
+
+enum WarningCategory {
+    WcUnknownWarningCategory = 0;
+    WcBatteryLow = 1;
+}
+
+//////// Motor //////////
 message SingleMotorTarget{
     oneof target{
         double torque = 1;  // Nm
         double speed = 2;   // rad/s
         int64 position = 3; // encoder position
-        bool brake = 4;     // No matter what mode, brake is always applied. Be aware that putting into brake mode might cause motor to lose position information.
+        bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
     }
 }
 
@@ -32,13 +53,13 @@ message MotorTargets {
 }
 
 enum MotorError{
-    CommunicationError = 0;
-    OverCurrent = 1;
-    OverVoltage = 2;
-    UnderVoltage = 3;
-    MotorOverTemperature = 4;
-    DriverOverTemperature = 5;
-    GeneralError = 6;
+    MeCommunicationError = 0;
+    MeOverCurrent = 1;
+    MeOverVoltage = 2;
+    MeUnderVoltage = 3;
+    MeMotorOverTemperature = 4;
+    MeDriverOverTemperature = 5;
+    MeGeneralError = 6;
 }
 
 message MotorStatus {
@@ -68,32 +89,11 @@ message MotorStatus {
 
 // Base State
 enum BaseState {
-    BSParked = 0;
-    BSAlgrithmControl = 1;
-    BSOvertakeSpeedControl = 2;
-    BSOvertakeZeroResistanceControl = 3;
-    BSEmergencyStop = 4;
-}
-
-enum ParkingStopCategory {
-    EmergencyStopButton = 0;
-    MotorHasError = 1;
-    BatteryFail = 2;
-    GamepadTriggered = 3;
-    UnknownParkingStopCategory = 4;
-    APICommunicationTimeout = 5;
-    LimitSwitchTriggered = 6;
-}
-
-message ParkingStopDetail {
-    string reason = 1;
-    ParkingStopCategory category = 2;
-    bool is_remotely_clearable = 3;
-}
-
-enum WarningCategory {
-    UnknownWarningCategory = 0;
-    BatteryLow = 1;
+    BsParked = 0;
+    BsAlgrithmControl = 1;
+    BsOvertakeSpeedControl = 2;
+    BsOvertakeZeroResistanceControl = 3;
+    BsEmergencyStop = 4;
 }
 
 message BaseStatus {
@@ -110,36 +110,26 @@ message BaseStatus {
     optional WarningCategory warning = 12;
 }
 
-message EzBaseCommand {
-    float spd_x = 1; // m/s
-    float spd_y = 2; // m/s
-    float spd_w = 3; // rad/s
-}
-
 message BaseCommand {
     oneof command{
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
         // If currently has a clearable parking stop, the parking stop state will be cleared.
         bool clear_parking_stop = 2;
-
-        // You have to continuesly send these commands no matter what if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
-        // If you fail to do so, robot will stop.
-        // Simplified base command. Might not be the best performance, but easy to use.
-        EzBaseCommand ez_base_command = 3;
-        // Control all motors directly. Do whatever you want.
-        MotorTargets motor_targets = 4;
+        // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
+        // The API does not support simple speed control.
+        MotorTargets motor_targets = 3;
     }
 }
 
 //////// Lift //////////
 
 enum LiftState {
-    LSBrake = 0;
-    LSCalibrating = 1;
-    LSAlgrithmControl = 2;
-    LSOvertakeControl = 3;
-    LSEmergencyStop = 4;
+    LsBrake = 0;
+    LsCalibrating = 1;
+    LsAlgrithmControl = 2;
+    LsOvertakeControl = 3;
+    LsEmergencyStop = 4;
 }
 
 // Read motor_status of APIUp to get current position
