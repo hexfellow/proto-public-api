@@ -9,5 +9,4 @@ message APIUp {
         LinearLiftStatus linear_lift_status = 3;
         // todo add arm, etc, if needed
     }
-    repeated MotorStatus motor_status = 10;
 }

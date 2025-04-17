@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-
+//////// Overall types //////////
 enum RobotType {
     Unknown = 0;
     TripleOmniWheelLRDriver = 1;
@@ -56,7 +56,7 @@ message MotorStatus {
     double wheel_radius = 6;
 
     repeated MotorError error = 7;
-    SingleMotorTarget currnet_target = 8;
+    SingleMotorTarget current_target = 8;
 
     optional float driver_temperature = 11;
     optional float motor_temperature = 12;
@@ -64,13 +64,15 @@ message MotorStatus {
     optional float voltage = 13;
 }
 
+//////// Base //////////
+
 // Base State
 enum BaseState {
-    Parked = 0;
-    AlgrithmControl = 1;
-    OvertakeSpeedControl = 2;
-    OvertakeZeroResistanceControl = 3;
-    EmergencyStop = 4;
+    BSParked = 0;
+    BSAlgrithmControl = 1;
+    BSOvertakeSpeedControl = 2;
+    BSOvertakeZeroResistanceControl = 3;
+    BSEmergencyStop = 4;
 }
 
 enum ParkingStopCategory {
@@ -101,10 +103,17 @@ message BaseStatus {
     bool api_control_initialized = 2;
     float battery_voltage = 3;                  // V
     uint32 battery_thousandth = 4;              // 1/1000
+    repeated MotorStatus motor_status = 5;
 
     optional bool battery_charging = 10;
     optional ParkingStopDetail parking_stop_detail = 11;
     optional WarningCategory warning = 12;
+}
+
+message EzBaseCommand {
+    float spd_x = 1; // m/s
+    float spd_y = 2; // m/s
+    float spd_w = 3; // rad/s
 }
 
 message BaseCommand {
@@ -113,19 +122,33 @@ message BaseCommand {
         bool api_control_initialize = 1;
         // If currently has a clearable parking stop, the parking stop state will be cleared.
         bool clear_parking_stop = 2;
-        // By sending this, will trigger a remote clearable parking stop with this detail. is_remotely_clearable MUST be true. 
-        // WARNING: The ParkingStop will try to stop the vehicle, BUT MIGHT FAIL, in worst case even out of control.
-        // DO NOT USE THIS AS EMERGENCY STOP. Use the physical emergency stop button in case of emergency.
-        ParkingStopDetail trigger_parking_stop = 3;
+
+        // You have to continuesly send these commands no matter what if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
+        // If you fail to do so, robot will stop.
+        // Simplified base command. Might not be the best performance, but easy to use.
+        EzBaseCommand ez_base_command = 3;
+        // Control all motors directly. Do whatever you want.
         MotorTargets motor_targets = 4;
     }
+}
+
+//////// Lift //////////
+
+enum LiftState {
+    LSBrake = 0;
+    LSCalibrating = 1;
+    LSAlgrithmControl = 2;
+    LSOvertakeControl = 3;
+    LSEmergencyStop = 4;
 }
 
 // Read motor_status of APIUp to get current position
 message LinearLiftStatus {
     bool calibrated = 1;
-    bool calibrating = 2;
+    LiftState state = 2;
+    // The max position you can set using software.
     int64 max_pos = 3;
+    int64 current_pos = 4;
     optional ParkingStopDetail parking_stop_detail = 10;
 }
 
@@ -135,6 +158,8 @@ message LinearLiftCommand {
         bool calibrate = 1;
         // Encoder position.
         // You can calculate this from meters by multiplying with pulse_per_meter.
+        // Do not send target_pos that larger than max_pos.
+        // Unlike base, you don't have to keep sending this command.
         int64 target_pos = 2;
         // No matter brake is true or false, brake will be applied when oneof selects this.
         // If send other oneof, brake will be released.
