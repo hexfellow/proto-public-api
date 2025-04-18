@@ -71,7 +71,7 @@ message MotorStatus {
     double speed = 3;
     // encoder position
     int64 position = 4;
-    // Number of pulses per rotation
+    // Number of pulses per rotation, output asix
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
     double wheel_radius = 6;
@@ -145,14 +145,19 @@ message LinearLiftStatus {
 message LinearLiftCommand {
     oneof command{
         // No matter calibrate is true or false, will always start calibration when oneof selects this.
+        // Unlike base you have the clear parking stop option (E.g. If triggered by limit switch, the exact moment you clear it, it get triggered again)
+        // Therefore to clear clearable parking stop, send calibrate command directly.
+        // Do NOT frequently send calibrate command.
         bool calibrate = 1;
         // Encoder position.
         // You can calculate this from meters by multiplying with pulse_per_meter.
         // Do not send target_pos that larger than max_pos.
-        // Unlike base, you don't have to keep sending this command.
+        // Unlike base, you don't have to keep sending target_pos, though it is recommended to do so.
         int64 target_pos = 2;
         // No matter brake is true or false, brake will be applied when oneof selects this.
-        // If send other oneof, brake will be released.
+        // Once recieved, will apply brake immediately and get into LsBrake mode.
+        // You can exit LsBrake mode by sending target_pos command or calibrate command.
+        // You don't have to keep sending brake command, though it is recommended to do so.
         bool brake = 3;
     }
 }
