@@ -2,7 +2,10 @@ syntax = "proto3";
 
 //////// Overall types //////////
 enum RobotType {
+    // Invalid Robot Type.
     RtUnknown = 0;
+
+    // Bases
     RtTripleOmniWheelLRDriver = 1;
     RtSteeringWheel3Module = 2;
     RtSteeringWheel4Module = 3;
@@ -10,13 +13,18 @@ enum RobotType {
     RtSteeringWheelSingleBModule = 5;
     RtMark1DiffBBDriver = 6;
     RtMark1McnmBBDriver = 7;
+
+    // Lifts
     // Linear Lifts can not be force controlled.
     // If you want force controlled lifts, consider ForceControlledLift series.
     RtLinearLiftISVLDriver = 8;
-    // Special Mode. Working purely as a can bus forwarder.
+
+    // Special modes
+    // Working purely as a can bus forwarder.
     RtPureForwardOnly = 100;
 }
 
+// Deliberately named to ParkingStop instead of EmergencyStop, to indicate that it is NOT emergency stop.
 enum ParkingStopCategory {
     PscEmergencyStopButton = 0;
     PscMotorHasError = 1;
@@ -161,3 +169,7 @@ message LinearLiftCommand {
         bool brake = 3;
     }
 }
+
+//////// Arm //////////
+
+// todo
