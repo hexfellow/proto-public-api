@@ -147,6 +147,11 @@ message LinearLiftStatus {
     // The max position you can set using software.
     int64 max_pos = 3;
     int64 current_pos = 4;
+    // Number of pulses per rotation, output asix
+    // Number of pulses per meter, for linear motor
+    uint32 pulse_per_rotation = 5;
+    // Pulses per second
+    uint32 max_speed = 6;
     optional ParkingStopDetail parking_stop_detail = 10;
 }
 
@@ -167,6 +172,8 @@ message LinearLiftCommand {
         // You can exit LsBrake mode by sending target_pos command or calibrate command.
         // You don't have to keep sending brake command, though it is recommended to do so.
         bool brake = 3;
+        // Set max speed.
+        uint32 set_max_speed = 4;
     }
 }
 
