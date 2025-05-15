@@ -6,5 +6,6 @@ message APIDown {
     oneof down{
         BaseCommand base_command = 1;
         LinearLiftCommand linear_lift_command = 2;
+        ArmCommand arm_command = 3;
     }
 }

@@ -19,6 +19,10 @@ enum RobotType {
     // If you want force controlled lifts, consider ForceControlledLift series.
     RtLinearLiftISVLDriver = 8;
 
+    // Arm
+    RtArmSaber750d3Lr3DmDriver = 9;
+    RtArmSaber750d4Lr3DmDriver = 10;
+
     // Special modes
     // Working purely as a can bus forwarder.
     RtPureForwardOnly = 100;
@@ -179,4 +183,33 @@ message LinearLiftCommand {
 
 //////// Arm //////////
 
-// todo
+// Base State
+enum ArmState {
+    AsParked = 0;
+    AsTimeout = 1;
+    AsEmergencyStop = 4;
+}
+
+message ArmStatus {
+    ArmState state = 1;
+
+    // Weather the API control is initialized.
+    bool api_control_initialized = 2;
+    bool calibrated = 3;
+    repeated MotorStatus motor_status = 4;
+
+    optional ParkingStopDetail parking_stop_detail = 5;
+}
+
+message ArmCommand {
+    oneof command{
+        // Only after api_control_initialize is set, can the vehicle be controlled by the API.
+        bool api_control_initialize = 1;
+        // If currently has a clearable parking stop, the parking stop state will be cleared.
+        bool clear_parking_stop = 2;
+        // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
+        // The API does not support simple speed control.
+        MotorTargets motor_targets = 3;
+        bool calibrate = 4;
+    }
+}
