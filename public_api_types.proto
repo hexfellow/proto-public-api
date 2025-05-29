@@ -108,6 +108,12 @@ enum BaseState {
     BsEmergencyStop = 4;
 }
 
+message BaseEstimatedOdometry {
+    float speed_x = 1; // m/s
+    float speed_y = 2; // m/s
+    float speed_theta = 3; // rad/s
+    // Later might add pos info
+}
 message BaseStatus {
     BaseState state = 1;
 
@@ -120,6 +126,8 @@ message BaseStatus {
     optional bool battery_charging = 10;
     optional ParkingStopDetail parking_stop_detail = 11;
     optional WarningCategory warning = 12;
+    // Not all base types support this!
+    optional BaseEstimatedOdometry estimated_odometry = 13;
 }
 
 message BaseCommand {
