@@ -111,8 +111,10 @@ enum BaseState {
 message BaseEstimatedOdometry {
     float speed_x = 1; // m/s
     float speed_y = 2; // m/s
-    float speed_theta = 3; // rad/s
-    // Later might add pos info
+    float speed_z = 3; // rad/s
+    double pos_x = 4;
+    double pos_y = 5;
+    double pos_z = 6;
 }
 message BaseStatus {
     BaseState state = 1;
@@ -139,6 +141,8 @@ message BaseCommand {
         // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
         // The API does not support simple speed control.
         MotorTargets motor_targets = 3;
+        // Reset odometry.
+        bool reset_odometry = 4;
     }
 }
 
