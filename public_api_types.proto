@@ -22,6 +22,8 @@ enum RobotType {
     // Arm
     RtArmSaber750d3Lr3DmDriver = 9;
     RtArmSaber750d4Lr3DmDriver = 10;
+    RtArmSaber750h3Lr3DmDriver = 11;
+    RtArmSaber750h4Lr3DmDriver = 12;
 
     // Special modes
     // Working purely as a can bus forwarder.
