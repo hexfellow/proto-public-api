@@ -158,7 +158,7 @@ message BaseCommand {
         // The API does not support simple speed control.
         // Note only force controlled base types support this.
         MotorTargets motor_targets = 3;
-        // Only simple base types support this.
+        // Only simple base types support this. Advanced base types support only support motor_targets.
         SimpleBaseMoveCommand simple_move_command = 5;
         // Reset odometry.
         bool reset_odometry = 4;
