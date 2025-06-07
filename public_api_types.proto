@@ -134,6 +134,20 @@ message BaseStatus {
     optional BaseEstimatedOdometry estimated_odometry = 13;
 }
 
+message XyzSpeed {
+    float speed_x = 1;
+    float speed_y = 2;
+    float speed_z = 3;
+}
+
+message SimpleBaseMoveCommand {
+    oneof command{
+        XyzSpeed xyz_speed = 1;
+        bool zero_resistance = 2;
+        bool brake = 3;
+    }
+}
+
 message BaseCommand {
     oneof command{
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
@@ -142,7 +156,10 @@ message BaseCommand {
         bool clear_parking_stop = 2;
         // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
         // The API does not support simple speed control.
+        // Note only force controlled base types support this.
         MotorTargets motor_targets = 3;
+        // Only simple base types support this.
+        SimpleBaseMoveCommand simple_move_command = 5;
         // Reset odometry.
         bool reset_odometry = 4;
     }
