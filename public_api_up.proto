@@ -10,4 +10,5 @@ message APIUp {
         ArmStatus arm_status = 4;
         // todo add other status if needed
     }
+    optional string log = 1000;
 }
