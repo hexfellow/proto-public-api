@@ -127,6 +127,7 @@ message BaseStatus {
     uint32 battery_thousandth = 4;              // 1/1000
     repeated MotorStatus motor_status = 5;
 
+    // Only avalible on vehicles that have BMS.
     optional bool battery_charging = 10;
     optional ParkingStopDetail parking_stop_detail = 11;
     optional WarningCategory warning = 12;
@@ -155,10 +156,9 @@ message BaseCommand {
         // If currently has a clearable parking stop, the parking stop state will be cleared.
         bool clear_parking_stop = 2;
         // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
-        // The API does not support simple speed control.
         // Note only force controlled base types support this.
+        // MotorTargets and SimpleBaseMoveCommand are mutually exclusive. Once you send one of them, the other will be ignored until deinitialize.
         MotorTargets motor_targets = 3;
-        // Only simple base types support this. Advanced base types support only support motor_targets.
         SimpleBaseMoveCommand simple_move_command = 5;
         // Reset odometry.
         bool reset_odometry = 4;
