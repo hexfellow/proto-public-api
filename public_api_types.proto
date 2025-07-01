@@ -15,9 +15,8 @@ enum RobotType {
     RtMark1McnmBBDriver = 7;
 
     // Lifts
-    // Linear Lifts can not be force controlled.
-    // If you want force controlled lifts, consider ForceControlledLift series.
-    RtLinearLiftISVLDriver = 8;
+    // Linear Lifts can only be controlled by position with max speed.
+    RtLotaLinearLift = 8;
 
     // Arm
     RtArmSaber750d3Lr3DmDriver = 9;
@@ -185,8 +184,10 @@ message LinearLiftStatus {
     // Number of pulses per rotation, output asix
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
-    // Pulses per second
+    // Pulses per second. ReadOnly, defines the max speed of the lift.
     uint32 max_speed = 6;
+    // Pulses per second
+    uint32 speed = 7;
     optional ParkingStopDetail parking_stop_detail = 10;
 }
 
@@ -195,11 +196,11 @@ message LinearLiftCommand {
         // No matter calibrate is true or false, will always start calibration when oneof selects this.
         // Unlike base you have the clear parking stop option (E.g. If triggered by limit switch, the exact moment you clear it, it get triggered again)
         // Therefore to clear clearable parking stop, send calibrate command directly.
-        // Do NOT frequently send calibrate command.
+        // DO NOT frequently send calibrate command.
         bool calibrate = 1;
         // Encoder position.
-        // You can calculate this from meters by multiplying with pulse_per_meter.
-        // Do not send target_pos that larger than max_pos.
+        // You can calculate this from meters by multiplying with pulse_per_rotation.
+        // Value you send will be clamped to [0, max_pos].
         // Unlike base, you don't have to keep sending target_pos, though it is recommended to do so.
         int64 target_pos = 2;
         // No matter brake is true or false, brake will be applied when oneof selects this.
@@ -207,8 +208,8 @@ message LinearLiftCommand {
         // You can exit LsBrake mode by sending target_pos command or calibrate command.
         // You don't have to keep sending brake command, though it is recommended to do so.
         bool brake = 3;
-        // Set max speed.
-        uint32 set_max_speed = 4;
+        // Set speed.
+        uint32 set_speed = 4;
     }
 }
 
