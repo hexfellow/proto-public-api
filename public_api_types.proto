@@ -189,6 +189,7 @@ message LinearLiftStatus {
     // Pulses per second
     uint32 speed = 7;
     optional ParkingStopDetail parking_stop_detail = 10;
+    optional bool custom_button_pressed = 11;
 }
 
 message LinearLiftCommand {
