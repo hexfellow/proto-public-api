@@ -1,5 +1,5 @@
-# proto-api
+# proto-public-api
 
-## todo 
+Provides the WebSocket API for controlling all kinds of robots.
 
-1. 分离 ros up 与 panel up, 开两个 ws 并限制 panel ws 为本地链接，防止失手重启
+All messages should be Binary. Text messages will be treated as errors. All messages from the robot is type APIUp. All messages sent to the robot must be type APIDown.
