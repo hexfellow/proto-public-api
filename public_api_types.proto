@@ -98,6 +98,31 @@ message MotorStatus {
     optional float voltage = 13;
 }
 
+message ImuAcceleration {
+    float ax = 1; // m/s^2
+    float ay = 2; // m/s^2
+    float az = 3; // m/s^2
+}
+
+message ImuAngularVelocity {
+    float wx = 1; // rad/s
+    float wy = 2; // rad/s
+    float wz = 3; // rad/s
+}
+
+message ImuQuaternion {
+    float qx = 1; // unitless
+    float qy = 2; // unitless
+    float qz = 3; // unitless
+    float qw = 4; // unitless
+}
+
+message ImuData {
+    ImuAcceleration acceleration = 1;
+    ImuAngularVelocity angular_velocity = 2;
+    ImuQuaternion quaternion = 3;
+}
+
 //////// Base //////////
 
 // Base State
@@ -132,6 +157,8 @@ message BaseStatus {
     optional WarningCategory warning = 12;
     // Not all base types support this!
     optional BaseEstimatedOdometry estimated_odometry = 13;
+    // Not all base types support this!
+    optional ImuData imu_data = 14;
 }
 
 message XyzSpeed {
