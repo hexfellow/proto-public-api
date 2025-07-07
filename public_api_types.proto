@@ -157,8 +157,6 @@ message BaseStatus {
     optional WarningCategory warning = 12;
     // Not all base types support this!
     optional BaseEstimatedOdometry estimated_odometry = 13;
-    // Not all base types support this!
-    optional ImuData imu_data = 14;
 }
 
 message XyzSpeed {
