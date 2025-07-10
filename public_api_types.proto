@@ -184,8 +184,6 @@ message BaseCommand {
         // MotorTargets and SimpleBaseMoveCommand are mutually exclusive. Once you send one of them, the other will be ignored until deinitialize.
         MotorTargets motor_targets = 3;
         SimpleBaseMoveCommand simple_move_command = 5;
-        // Reset odometry.
-        bool reset_odometry = 4;
     }
 }
 
