@@ -33,11 +33,12 @@ enum RobotType {
 enum ParkingStopCategory {
     PscEmergencyStopButton = 0;
     PscMotorHasError = 1;
-    PscBatteryFail = 2;
+    PscBatteryProtection = 2;
     PscGamepadTriggered = 3;
     PscUnknownParkingStopCategory = 4;
     PscAPICommunicationTimeout = 5;
     PscLimitSwitchTriggered = 6;
+    PscBmsTimeout = 7;
 }
 
 message ParkingStopDetail {
