@@ -1,6 +1,29 @@
 syntax = "proto3";
 
 //////// Overall types //////////
+message GamepadRead {
+    float left_stick_x = 1;
+    float left_stick_y = 2;
+    float right_stick_x = 3;
+    float right_stick_y = 4;
+    bool left_bumper = 5;
+    bool right_bumper = 6;
+    float left_trigger = 7;
+    float right_trigger = 8;
+    bool a_button = 9;
+    bool b_button = 10;
+    bool x_button = 11;
+    bool y_button = 12;
+    bool select_button = 13;
+    bool start_button = 14;
+    bool left_stick_button = 15;
+    bool right_stick_button = 16;
+    bool dpad_up = 17;
+    bool dpad_down = 18;
+    bool dpad_left = 19;
+    bool dpad_right = 20;
+}
+
 enum RobotType {
     // Invalid Robot Type.
     RtUnknown = 0;

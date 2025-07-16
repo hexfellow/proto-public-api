@@ -11,4 +11,5 @@ message APIUp {
         ArmStatus arm_status = 4;
     }
     optional ImuData imu_data = 10;
+    optional GamepadRead gamepad_read = 11;
 }
