@@ -7,6 +7,7 @@ message APIUp {
     oneof status{
         BaseStatus base_status = 2;
         LinearLiftStatus linear_lift_status = 3;
+        RotateLiftStatus rotate_lift_status = 5;
         ArmStatus arm_status = 4;
     }
     optional ImuData imu_data = 10;

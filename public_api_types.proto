@@ -18,6 +18,9 @@ enum RobotType {
     // Linear Lifts can only be controlled by position with max speed.
     RtLotaLinearLift = 8;
 
+    // Rotational Lifts
+    RtTbdLift = 13;
+
     // Arm
     RtArmSaber750d3Lr3DmDriver = 9;
     RtArmSaber750d4Lr3DmDriver = 10;
@@ -196,6 +199,21 @@ enum LiftState {
     LsAlgrithmControl = 2;
     LsOvertakeControl = 3;
     LsEmergencyStop = 4;
+}
+
+message RotateLiftStatus {
+    bool calibrated = 1;
+    LiftState state = 2;
+    repeated MotorStatus motor_status = 3;
+    repeated uint32 max_pos = 4;
+    optional ParkingStopDetail parking_stop_detail = 10;
+}
+
+message RotateLiftCommand {
+    oneof command{
+        bool calibrate = 1;
+        MotorTargets motor_targets = 2;
+    }
 }
 
 // Read motor_status of APIUp to get current position
