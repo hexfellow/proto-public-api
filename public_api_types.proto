@@ -42,13 +42,17 @@ enum RobotType {
     RtLotaLinearLift = 8;
 
     // Rotational Lifts
-    RtTbdLift = 13;
+    RtZeta3Lift = 13;
 
     // Arm
+    // Legacy
     RtArmSaber750d3Lr3DmDriver = 9;
     RtArmSaber750d4Lr3DmDriver = 10;
     RtArmSaber750h3Lr3DmDriver = 11;
     RtArmSaber750h4Lr3DmDriver = 12;
+    // Current MainStream Products
+    RtArmSaberD6X = 14;
+    RtArmSaberD7X = 15;
 
     // Special modes
     // Working purely as a can bus forwarder.
