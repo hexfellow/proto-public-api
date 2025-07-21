@@ -233,6 +233,7 @@ message RotateLiftStatus {
     LiftState state = 2;
     repeated MotorStatus motor_status = 3;
     repeated uint32 max_pos = 4;
+    repeated uint32 min_pos = 5;
     optional ParkingStopDetail parking_stop_detail = 10;
 }
 
