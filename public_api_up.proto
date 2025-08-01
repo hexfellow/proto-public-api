@@ -10,6 +10,7 @@ message APIUp {
         RotateLiftStatus rotate_lift_status = 5;
         ArmStatus arm_status = 4;
     }
+    // Imu's raw data. Independent of mounting position.
     optional ImuData imu_data = 10;
     optional GamepadRead gamepad_read = 11;
 }
