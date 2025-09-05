@@ -90,7 +90,16 @@ message SingleMotorTarget{
         double speed = 2;   // rad/s
         int64 position = 3; // encoder position
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
+        MitMotorTarget mit_target = 5;   // Not all motors support this.
     }
+}
+
+message MitMotorTarget {
+    double torque = 1;  // Nm
+    double speed = 2;   // rad/s
+    double position = 3; // encoder position
+    double kp = 4;
+    double kd = 5;
 }
 
 message MotorTargets {
