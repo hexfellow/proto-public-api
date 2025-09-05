@@ -36,6 +36,7 @@ enum RobotType {
     RtCustomPcwVehicle = 4;
     RtMark1DiffBBDriver = 6;
     RtMark1McnmBBDriver = 7;
+    RtArk2LrDriver = 5;
 
     // Lifts
     // Linear Lifts can only be controlled by position with max speed.
