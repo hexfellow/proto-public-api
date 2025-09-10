@@ -26,6 +26,8 @@ message GamepadRead {
 
 enum ReportFrequency { 
     Rf1000Hz = 0;
+    Rf500Hz = 3;
+    Rf250Hz = 4;
     Rf100Hz = 1;
     Rf50Hz = 2;
 }
