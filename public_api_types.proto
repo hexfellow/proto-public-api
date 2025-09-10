@@ -24,6 +24,12 @@ message GamepadRead {
     bool dpad_right = 20;
 }
 
+enum ReportFrequency { 
+    Rf1000Hz = 0;
+    Rf100Hz = 1;
+    Rf50Hz = 2;
+}
+
 enum RobotType {
     // Invalid Robot Type.
     RtUnknown = 0;

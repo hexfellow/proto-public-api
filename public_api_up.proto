@@ -13,4 +13,5 @@ message APIUp {
     // Imu's raw data. Independent of mounting position.
     optional ImuData imu_data = 10;
     optional GamepadRead gamepad_read = 11;
+    ReportFrequency report_frequency = 12;
 }

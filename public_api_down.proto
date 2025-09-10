@@ -6,7 +6,8 @@ message APIDown {
     oneof down{
         BaseCommand base_command = 1;
         LinearLiftCommand linear_lift_command = 2;
-        RotateLiftCommand rotate_lift_command = 4;
         ArmCommand arm_command = 3;
+        RotateLiftCommand rotate_lift_command = 4;
+        ReportFrequency set_report_frequency = 5;
     }
 }
