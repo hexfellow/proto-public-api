@@ -63,6 +63,8 @@ enum RobotType {
     RtArmSaberD6X = 14;
     RtArmSaberD7X = 15;
     RtArmArcherD6Y = 16;
+    // No arm, for use of only hand, no arm.
+    RtArmNoArm = 17;
     
     // Special modes
     // Working purely as a can bus forwarder.
@@ -102,6 +104,8 @@ message SingleMotorTarget{
         MitMotorTarget mit_target = 5;   // Not all motors support this.
     }
 }
+
+// todo Add speed with max torque, and position with max torque and speed.
 
 message MitMotorTarget {
     double torque = 1;  // Nm
@@ -329,6 +333,21 @@ message ArmStatus {
     repeated MotorStatus motor_status = 4;
 
     optional ParkingStopDetail parking_stop_detail = 5;
+    optional HandStatus hand_status = 6;
+}
+
+enum HandType {
+    // No hand.
+    HtNone = 0;
+    HtGp100 = 1;
+}
+
+message HandStatus {
+    HandType hand_type = 1;
+    bool calibrated = 2;
+    // Consider adding pos with max torque and speed to motor targets?
+    // Is it most often used?
+    repeated MotorStatus motor_status = 3;
 }
 
 message ArmCommand {
