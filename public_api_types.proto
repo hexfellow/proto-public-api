@@ -63,8 +63,6 @@ enum RobotType {
     RtArmSaberD6X = 14;
     RtArmSaberD7X = 15;
     RtArmArcherD6Y = 16;
-    // No arm, for use of only hand, no arm.
-    RtArmNoArm = 17;
     
     // Special modes
     // Working purely as a can bus forwarder.
@@ -333,21 +331,20 @@ message ArmStatus {
     repeated MotorStatus motor_status = 4;
 
     optional ParkingStopDetail parking_stop_detail = 5;
-    optional HandStatus hand_status = 6;
 }
 
 enum HandType {
-    // No hand.
-    HtNone = 0;
+    HtInvalid = 0;
     HtGp100 = 1;
 }
 
 message HandStatus {
     HandType hand_type = 1;
-    bool calibrated = 2;
-    // Consider adding pos with max torque and speed to motor targets?
-    // Is it most often used?
-    repeated MotorStatus motor_status = 3;
+    repeated MotorStatus motor_status = 2;
+}
+
+message HandCommand {
+    MotorTargets motor_targets = 1;
 }
 
 message ArmCommand {
