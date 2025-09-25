@@ -18,4 +18,7 @@ message APIUp {
     optional string log = 14;
 
     ReportFrequency report_frequency = 12;
+    // Identifies different websocket connections.
+    // Value will not be zero
+    uint32 session_id = 15;
 }

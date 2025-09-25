@@ -327,8 +327,9 @@ message ArmStatus {
     ArmMode current_mode = 2;
     bool calibrated = 3;
     repeated MotorStatus motor_status = 4;
+    uint32 session_holder = 6;
 
-    // Arm is special. Api timeout will not be treated as fatal error, it will just quitely disable it self.
+    // Arm is special. Api timeout will not be treated as fatal error, it will just send a log and disable it self, releasing the session id.
     // Switching to mode the user sets as default disabled mode. (AmBrake, AmFreeDrag, AmZeroCurrent)
     optional ParkingStopDetail parking_stop_detail = 5;
 }
@@ -347,8 +348,15 @@ message HandCommand {
     MotorTargets motor_targets = 1;
 }
 
-message ArmCommand {
+message ArmSharedCommand {
     oneof command{
+        bool clear_parking_stop = 1;
+        ParkingStopDetail enter_parking_stop = 2;
+    }
+}
+
+message ArmExclusiveCommand {
+    oneof exclusive_command {
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
         // If currently has a clearable parking stop, the parking stop state will be cleared.
@@ -356,7 +364,16 @@ message ArmCommand {
         // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
         // The API does not support simple speed control.
         MotorTargets motor_targets = 3;
+        // Just in case
         bool calibrate = 4;
     }
-    ArmMode target_mode = 10;
+    ArmMode target_mode = 5;
+}
+
+message ArmCommand {
+    oneof command{
+        // Only the session holder can send this command. Ohterwise will be ignored.
+        ArmExclusiveCommand arm_exclusive_command = 1; 
+        ArmSharedCommand arm_shared_command = 2;
+    }
 }
