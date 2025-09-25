@@ -314,22 +314,22 @@ message LinearLiftCommand {
 }
 
 //////// Arm //////////
-
-// Base State
-enum ArmState {
-    AsParked = 0;
-    AsTimeout = 1;
-    AsEmergencyStop = 4;
+enum ArmMode {
+    AmBrake = 0;
+    AmApiControl = 1;
+    AmFreeDrag = 2; // Floating, ZeroForce feel, etc
+    AmZeroCurrent = 3;
 }
 
 message ArmStatus {
-    ArmState state = 1;
-
     // Weather the API control is initialized.
-    bool api_control_initialized = 2;
+    bool api_control_initialized = 1;
+    ArmMode current_mode = 2;
     bool calibrated = 3;
     repeated MotorStatus motor_status = 4;
 
+    // Arm is special. Api timeout will not be treated as fatal error, it will just quitely disable it self.
+    // Switching to mode the user sets as default disabled mode. (AmBrake, AmFreeDrag, AmZeroCurrent)
     optional ParkingStopDetail parking_stop_detail = 5;
 }
 
@@ -358,4 +358,5 @@ message ArmCommand {
         MotorTargets motor_targets = 3;
         bool calibrate = 4;
     }
+    ArmMode target_mode = 10;
 }

@@ -14,6 +14,8 @@ message APIUp {
     optional ImuData imu_data = 10;
     optional GamepadRead gamepad_read = 11;
     optional HandStatus hand_status = 13;
-    
+    // Optional log message.
+    optional string log = 14;
+
     ReportFrequency report_frequency = 12;
 }
