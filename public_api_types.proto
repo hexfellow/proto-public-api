@@ -202,6 +202,7 @@ message BaseStatus {
     float battery_voltage = 3;                  // V
     uint32 battery_thousandth = 4;              // 1/1000
     repeated MotorStatus motor_status = 5;
+    uint32 session_holder = 6;
 
     // Only avalible on vehicles that have BMS.
     optional bool battery_charging = 10;
@@ -226,10 +227,13 @@ message SimpleBaseMoveCommand {
 }
 
 message BaseCommand {
+    // The session holder can send all commands.
+    // Non-session holders can only send clear_parking_stop command.
     oneof command{
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
         // If currently has a clearable parking stop, the parking stop state will be cleared.
+        // This is the ONLY command that can be sent by non-session holders.
         bool clear_parking_stop = 2;
         // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
         // Note only force controlled base types support this.
