@@ -38,10 +38,11 @@ enum RobotType {
 
     // Bases
     RtTripleOmniWheelLRDriver = 1;
-    // Standard vehicle. Name will be changed to in the future.
-    RtPcwVehicle = 2;
+    RtMaverX4 = 2;
     // Custom PCW vehicle. No matter how many PCW modules are used, all of them are treated as this same type of vehicle.
     RtCustomPcwVehicle = 4;
+    RtMaverL4 = 20;
+    RtMaverL2 = 21;
     RtMark1DiffBBDriver = 6;
     RtMark1McnmBBDriver = 7;
     RtArk2LrDriver = 5;
