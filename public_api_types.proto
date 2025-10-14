@@ -1,60 +1,43 @@
+// This file contains mainly two sections:
+// 1. Must read types.
+// 2. Extended reading types.
+// We ONLY SUPPORT EXPLAINING Must read types. Extended reading types are not guaranteed to be explained.
+
 syntax = "proto3";
 
-//////// Overall types //////////
-message GamepadRead {
-    float left_stick_x = 1;
-    float left_stick_y = 2;
-    float right_stick_x = 3;
-    float right_stick_y = 4;
-    bool left_bumper = 5;
-    bool right_bumper = 6;
-    float left_trigger = 7;
-    float right_trigger = 8;
-    bool a_button = 9;
-    bool b_button = 10;
-    bool x_button = 11;
-    bool y_button = 12;
-    bool select_button = 13;
-    bool start_button = 14;
-    bool left_stick_button = 15;
-    bool right_stick_button = 16;
-    bool dpad_up = 17;
-    bool dpad_down = 18;
-    bool dpad_left = 19;
-    bool dpad_right = 20;
-}
-
-enum ReportFrequency { 
-    Rf1000Hz = 0;
-    Rf500Hz = 3;
-    Rf250Hz = 4;
-    Rf100Hz = 1;
-    Rf50Hz = 2;
-}
+// ---------------------
+//////// Must read types //////////
+// ---------------------
 
 enum RobotType {
-    // Invalid Robot Type.
+    // Invalid Robot Type. This is the default value when you do a factory reset.
     RtUnknown = 0;
 
-    // Bases
-    RtTripleOmniWheelLRDriver = 1;
+    ////// Bases //////
+    ////// 底盘机器人 //////
+    RtTriggerA3 = 1;
     RtMaverX4 = 2;
     // Custom PCW vehicle. No matter how many PCW modules are used, all of them are treated as this same type of vehicle.
     RtCustomPcwVehicle = 4;
     RtMaverL4 = 20;
     RtMaverL2 = 21;
     RtMark1DiffBBDriver = 6;
-    RtMark1McnmBBDriver = 7;
     RtArk2LrDriver = 5;
+    // Legacy
+    RtMark1McnmBBDriver = 7;
 
-    // Lifts
+    ////// Linear Lifts //////
+    ////// 线性升降机 //////
     // Linear Lifts can only be controlled by position with max speed.
+    // 线性升降机只能通过位置控制，并且有最大速度限制。
     RtLotaLinearLift = 8;
 
-    // Rotational Lifts
+    ////// Rotational Lifts //////
+    ////// 旋转升降机 //////
     RtZeta3Lift = 13;
 
-    // Arm
+    ////// Arm //////
+    ////// 机械臂 //////
     // Legacy
     RtArmSaber750d3Lr3DmDriver = 9;
     RtArmSaber750d4Lr3DmDriver = 10;
@@ -65,115 +48,9 @@ enum RobotType {
     RtArmSaberD7X = 15;
     RtArmArcherD6Y = 16;
     
-    // Special modes
+    ////// Special modes //////
     // Working purely as a can bus forwarder.
     RtPureForwardOnly = 100;
-}
-
-// Deliberately named to ParkingStop instead of EmergencyStop, to indicate that it is NOT emergency stop.
-enum ParkingStopCategory {
-    PscEmergencyStopButton = 0;
-    PscMotorHasError = 1;
-    PscBatteryProtection = 2;
-    PscGamepadTriggered = 3;
-    PscUnknownParkingStopCategory = 4;
-    PscAPICommunicationTimeout = 5;
-    PscLimitSwitchTriggered = 6;
-    PscBmsTimeout = 7;
-}
-
-message ParkingStopDetail {
-    string reason = 1;
-    ParkingStopCategory category = 2;
-    bool is_remotely_clearable = 3;
-}
-
-enum WarningCategory {
-    WcUnknownWarningCategory = 0;
-    WcBatteryLow = 1;
-}
-
-//////// Motor //////////
-message SingleMotorTarget{
-    oneof target{
-        double torque = 1;  // Nm
-        double speed = 2;   // rad/s
-        int64 position = 3; // encoder position
-        bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
-        MitMotorTarget mit_target = 5;   // Not all motors support this.
-    }
-}
-
-// todo Add speed with max torque, and position with max torque and speed.
-
-message MitMotorTarget {
-    double torque = 1;  // Nm
-    double speed = 2;   // rad/s
-    double position = 3; // encoder position
-    double kp = 4;
-    double kd = 5;
-}
-
-message MotorTargets {
-    repeated SingleMotorTarget targets = 1;
-}
-
-enum MotorError{
-    MeCommunicationError = 0;
-    MeOverCurrent = 1;
-    MeOverVoltage = 2;
-    MeUnderVoltage = 3;
-    MeMotorOverTemperature = 4;
-    MeDriverOverTemperature = 5;
-    MeGeneralError = 6;
-}
-
-message MotorStatus {
-    // Nm
-    double torque = 2; 
-    // In general positivive is counter-clockwise(Right hand). But view angle is defined differently for different robot types.
-    // View XSTD guide for detailed definition of positive direction.
-    // m/s, direction is not defined, for linear motor
-    double speed = 3;
-    // encoder position
-    int64 position = 4;
-    // Number of pulses per rotation, output asix
-    // Number of pulses per meter, for linear motor
-    uint32 pulse_per_rotation = 5;
-    double wheel_radius = 6;
-
-    repeated MotorError error = 7;
-    SingleMotorTarget current_target = 8;
-
-    optional float driver_temperature = 11;
-    optional float motor_temperature = 12;
-    // current suppiled voltage
-    optional float voltage = 13;
-}
-
-message ImuAcceleration {
-    float ax = 1; // m/s^2
-    float ay = 2; // m/s^2
-    float az = 3; // m/s^2
-}
-
-message ImuAngularVelocity {
-    float wx = 1; // rad/s
-    float wy = 2; // rad/s
-    float wz = 3; // rad/s
-}
-
-message ImuQuaternion {
-    float qx = 1; // unitless
-    float qy = 2; // unitless
-    float qz = 3; // unitless
-    float qw = 4; // unitless
-}
-
-message ImuData {
-    ImuAcceleration acceleration = 1;
-    ImuAngularVelocity angular_velocity = 2;
-    ImuQuaternion quaternion = 3;
 }
 
 //////// Base //////////
@@ -191,9 +68,9 @@ message BaseEstimatedOdometry {
     float speed_x = 1; // m/s
     float speed_y = 2; // m/s
     float speed_z = 3; // rad/s
-    double pos_x = 4;
-    double pos_y = 5;
-    double pos_z = 6;
+    double pos_x = 4; // m
+    double pos_y = 5; // m
+    double pos_z = 6; // rad
 }
 message BaseStatus {
     BaseState state = 1;
@@ -203,7 +80,7 @@ message BaseStatus {
     float battery_voltage = 3;                  // V
     uint32 battery_thousandth = 4;              // 1/1000
     repeated MotorStatus motor_status = 5;
-    uint32 session_holder = 6;
+    uint32 session_holder = 6;                  // 0 means no session holder
 
     // Only avalible on vehicles that have BMS.
     optional bool battery_charging = 10;
@@ -381,4 +258,160 @@ message ArmCommand {
         ArmExclusiveCommand arm_exclusive_command = 1; 
         ArmSharedCommand arm_shared_command = 2;
     }
+}
+
+// ---------------------
+//////// Extended reading types //////////
+// ---------------------
+
+message GamepadRead {
+    float left_stick_x = 1;
+    float left_stick_y = 2;
+    float right_stick_x = 3;
+    float right_stick_y = 4;
+    bool left_bumper = 5;
+    bool right_bumper = 6;
+    float left_trigger = 7;
+    float right_trigger = 8;
+    bool a_button = 9;
+    bool b_button = 10;
+    bool x_button = 11;
+    bool y_button = 12;
+    bool select_button = 13;
+    bool start_button = 14;
+    bool left_stick_button = 15;
+    bool right_stick_button = 16;
+    bool dpad_up = 17;
+    bool dpad_down = 18;
+    bool dpad_left = 19;
+    bool dpad_right = 20;
+}
+
+enum ReportFrequency { 
+    Rf1000Hz = 0;
+    Rf500Hz = 3;
+    Rf250Hz = 4;
+    Rf100Hz = 1;
+    Rf50Hz = 2;
+}
+
+
+message ImuAcceleration {
+    float ax = 1; // m/s^2
+    float ay = 2; // m/s^2
+    float az = 3; // m/s^2
+}
+
+message ImuAngularVelocity {
+    float wx = 1; // rad/s
+    float wy = 2; // rad/s
+    float wz = 3; // rad/s
+}
+
+message ImuQuaternion {
+    float qx = 1; // unitless
+    float qy = 2; // unitless
+    float qz = 3; // unitless
+    float qw = 4; // unitless
+}
+
+message ImuData {
+    ImuAcceleration acceleration = 1;
+    ImuAngularVelocity angular_velocity = 2;
+    ImuQuaternion quaternion = 3;
+}
+
+
+// Deliberately named to ParkingStop instead of EmergencyStop, to indicate that it is NOT emergency stop. Do not use this for safety related operations.
+// 故意命名为 ParkingStop 而不是 EmergencyStop，以表明它不是紧急停止。不要用于安全相关操作。
+enum ParkingStopCategory {
+    PscEmergencyStopButton = 0;
+    PscMotorHasError = 1;
+    PscBatteryProtection = 2;
+    PscGamepadTriggered = 3;
+    PscUnknownParkingStopCategory = 4;
+    PscAPICommunicationTimeout = 5;
+    PscLimitSwitchTriggered = 6;
+    PscBmsTimeout = 7;
+}
+
+// Parking stop detail.
+// 停车停止详细信息。
+message ParkingStopDetail {
+    // For human reading. Do not use this for programmatic operations.
+    // 仅供人类阅读。不要用于编程操作。
+    string reason = 1;
+    // Parking stop category. This can be used for programmatic operations.
+    // 停车停止类别。可用于编程操作。
+    ParkingStopCategory category = 2;
+    // If this parking stop can be cleared remotely. Some errors can be recovered remotely (e.g. API Communication Timeout). 
+    // Some are not, and can only be cleared by when errors are gone, e.g. Battery Protection.
+    // 表明这个停车停止可以远程清除。有些错误可以远程清除（例如 API 通信超时）。有些错误不能远程清除，只能当错误消失时清除，例如电池保护。
+    bool is_remotely_clearable = 3;
+}
+
+// Warning category.
+// 警告类别。
+enum WarningCategory {
+    WcUnknownWarningCategory = 0;
+    WcBatteryLow = 1;
+}
+
+//////// Motor //////////
+// 单个电机的目标。后续可能增加更多目标值
+message SingleMotorTarget{
+    oneof target{
+        double torque = 1;  // Nm
+        double speed = 2;   // rad/s
+        int64 position = 3; // encoder position
+        bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
+        MitMotorTarget mit_target = 5;   // Not all motors support this.
+    }
+}
+
+// todo Add speed with max torque, and position with max torque and speed.
+
+message MitMotorTarget {
+    double torque = 1;  // Nm
+    double speed = 2;   // rad/s
+    double position = 3; // encoder position
+    double kp = 4;
+    double kd = 5;
+}
+
+message MotorTargets {
+    repeated SingleMotorTarget targets = 1;
+}
+
+enum MotorError{
+    MeCommunicationError = 0;
+    MeOverCurrent = 1;
+    MeOverVoltage = 2;
+    MeUnderVoltage = 3;
+    MeMotorOverTemperature = 4;
+    MeDriverOverTemperature = 5;
+    MeGeneralError = 6;
+}
+
+message MotorStatus {
+    // Nm
+    double torque = 2; 
+    // In general positivive is counter-clockwise(Right hand). But view angle is defined differently for different robot types.
+    // View XSTD guide for detailed definition of positive direction.
+    // m/s, direction is not defined, for linear motor
+    double speed = 3;
+    // encoder position
+    int64 position = 4;
+    // Number of pulses per rotation, output asix
+    // Number of pulses per meter, for linear motor
+    uint32 pulse_per_rotation = 5;
+    double wheel_radius = 6;
+
+    repeated MotorError error = 7;
+    SingleMotorTarget current_target = 8;
+
+    optional float driver_temperature = 11;
+    optional float motor_temperature = 12;
+    // current suppiled voltage
+    optional float voltage = 13;
 }

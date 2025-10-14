@@ -2,23 +2,45 @@ syntax = "proto3";
 
 import "public_api_types.proto"; 
 
+// All messages from the robot are in this format.
+// Different robot types have different status fields.
+// 所有机器人发给上位机的消息都是这个格式。
+// 不同机器人类型有不同的状态字段。
 message APIUp {
+    // This field indicates the robot type.
+    // 这个字段表示机器人类型。
     RobotType robot_type = 1;
     oneof status{
+        // Base robots will use this field.
+        // 底盘机器人会使用这个字段。
         BaseStatus base_status = 2;
+        // Linear lifts will use this field.
+        // 线性升降机会使用这个字段。
         LinearLiftStatus linear_lift_status = 3;
+        // Rotational lifts will use this field.
+        // 旋转升降机会使用这个字段。
         RotateLiftStatus rotate_lift_status = 5;
+        // Arms will use this field.
+        // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
     }
-    // Imu's raw data. Independent of mounting position.
+    // Imu's raw data. Independent of mounting position. This is tricky because different robot types have different mounting positions. Not all robot types have imu.
+    // Imu 的原始数据。与安装位置无关。请特别注意不同机器人类型有不同的安装位置。不是所有机器人类型都有 imu。
     optional ImuData imu_data = 10;
+    // Gamepad read. Optional.
+    // 遥控器读取的数据。仅供参考
     optional GamepadRead gamepad_read = 11;
+    // Hand status. Optional.
+    // 机械手的数据。不是所有机器人类型都有机械手。
     optional HandStatus hand_status = 13;
-    // Optional log message.
+    // Optional log message. Unless you are interested in the log, you can ignore this field.
+    // 可选的日志消息。除非您对日志感兴趣，否则可以忽略这个字段不解析。
     optional string log = 14;
 
+    // Current report frequency. This field is connection independent. A single robot might have multiple websocket connections. Each connection might have a different report frequency.
+    // 当前的报告频率。这个字段与连接无关。一个机器人可能有多个 websocket 连接。每个连接可能有不同的报告频率。
     ReportFrequency report_frequency = 12;
-    // Identifies different websocket connections.
-    // Value will not be zero
+    // Identifies different websocket connections. Value will not be zero.
+    // 识别不同的 websocket 连接。值不会为零。
     uint32 session_id = 15;
 }
