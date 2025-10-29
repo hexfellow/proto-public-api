@@ -10,6 +10,10 @@ message APIUp {
     // This field indicates the robot type.
     // 这个字段表示机器人类型。
     RobotType robot_type = 1;
+    // Rolls with potential breaking changes. e.g. Refactoring the message structure, removing deprecated robot types, etc.
+    uint32 protocol_major_version = 17;
+    // Rolls with potential non-breaking changes. e.g. adding new robot types.
+    uint32 protocol_minor_version = 18;
     oneof status{
         // Base robots will use this field.
         // 底盘机器人会使用这个字段。
@@ -24,15 +28,9 @@ message APIUp {
         // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
     }
-    // Imu's raw data. Independent of mounting position. This is tricky because different robot types have different mounting positions. Not all robot types have imu.
-    // Imu 的原始数据。与安装位置无关。请特别注意不同机器人类型有不同的安装位置。不是所有机器人类型都有 imu。
-    optional ImuData imu_data = 10;
-    // Gamepad read. Optional.
-    // 遥控器读取的数据。仅供参考
-    optional GamepadRead gamepad_read = 11;
-    // Hand status. Optional.
-    // 机械手的数据。不是所有机器人类型都有机械手。
-    optional HandStatus hand_status = 13;
+    // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
+    // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。
+    repeated SecondaryDeviceStatus secondary_device_status = 16;
     // Optional log message. Unless you are interested in the log, you can ignore this field.
     // 可选的日志消息。除非您对日志感兴趣，否则可以忽略这个字段不解析。
     optional string log = 14;
@@ -43,4 +41,8 @@ message APIUp {
     // Identifies different websocket connections. Value will not be zero.
     // 识别不同的 websocket 连接。值不会为零。
     uint32 session_id = 15;
+
+    // Deprecated fields.
+    // 弃用的字段。
+    reserved 10,11,13;
 }

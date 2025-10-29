@@ -415,3 +415,22 @@ message MotorStatus {
     // current suppiled voltage
     optional float voltage = 13;
 }
+
+// Hand, 3+3 Arms, etc
+message SecondaryDeviceStatus {
+    // Can be used to tell from different devices, e.g. Imu1, Imu2, Hand1, Hand2, Gamepad1, Gamepad2, etc.
+    uint32 device_id = 1;
+    // For future expansion.
+    reserved 2 to 10;
+    oneof status{
+        // Imu's raw data. Independent of mounting position. This is tricky because different robot types have different mounting positions. Not all robot types have imu.
+        // Imu 的原始数据。与安装位置无关。请特别注意不同机器人类型有不同的安装位置。不是所有机器人类型都有 imu。
+        ImuData imu_data = 11;
+        // Hand status. Optional.
+        // 机械手的数据。不是所有机器人类型都有机械手。
+        HandStatus hand_status = 12;
+        // Gamepad read. Optional.
+        // 遥控器读取的数据。仅供参考
+        GamepadRead gamepad_read = 13;
+    }
+}
