@@ -11,9 +11,12 @@ message APIUp {
     // 这个字段表示机器人类型。
     RobotType robot_type = 1;
     // Rolls with potential breaking changes. e.g. Refactoring the message structure, removing deprecated robot types, etc.
-    uint32 protocol_major_version = 17;
+    // 变更意味着 breaking change。
+    uint32 protocol_major_version = 17; // Current value is 1.
     // Rolls with potential non-breaking changes. e.g. adding new robot types.
     uint32 protocol_minor_version = 18;
+    // Status of main device.
+    // 主设备的状态。
     oneof status{
         // Base robots will use this field.
         // 底盘机器人会使用这个字段。

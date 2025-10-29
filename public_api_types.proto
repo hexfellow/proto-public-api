@@ -419,6 +419,10 @@ message MotorStatus {
 // Hand, 3+3 Arms, etc
 message SecondaryDeviceStatus {
     // Can be used to tell from different devices, e.g. Imu1, Imu2, Hand1, Hand2, Gamepad1, Gamepad2, etc.
+    // This number should not change once allocated.
+    // It is possible for this number to be dynamically allocated, but we don't see any need for now. Therefore for all RobotType we currently have,
+    //   all of its SecondaryDevices will have certain device_id. (e.g. For Base, IMU is always 1, Gamepad is always 2, etc.)
+    // When sending command down, device_id must match the device_id in the command.
     uint32 device_id = 1;
     // For future expansion.
     reserved 2 to 10;
@@ -432,5 +436,14 @@ message SecondaryDeviceStatus {
         // Gamepad read. Optional.
         // 遥控器读取的数据。仅供参考
         GamepadRead gamepad_read = 13;
+    }
+}
+
+message SecondaryDeviceCommand {
+    // Basically the same as device_id in SecondaryDeviceStatus.
+    uint32 device_id = 1;
+    reserved 2 to 10;
+    oneof command{
+        HandCommand hand_command = 12;
     }
 }

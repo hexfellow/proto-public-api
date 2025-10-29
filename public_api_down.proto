@@ -7,6 +7,7 @@ import "public_api_types.proto";
 // 所有发送给机器人的消息都是这个格式。
 // 不同机器人类型有不同的命令字段。
 message APIDown {
+    // Single command makes mpsc model easier to implement.
     oneof down{
         // Base robots will use this field.
         // 底盘机器人会使用这个字段。
@@ -23,8 +24,11 @@ message APIDown {
         // Sets report frequency for THIS connection. Will not affect other connections.
         // 设置本连接的报告频率。不会影响其他连接。
         ReportFrequency set_report_frequency = 5;
-        // Hand command. Optional.
-        // 机械手命令。可选。
-        HandCommand hand_command = 6;
+        // There might be multiple secondary devices. Send commands to different devices separately.
+        // 可能有多台次级设备。请分别发送命令到不同的设备。
+        SecondaryDeviceCommand secondary_device_command = 7;
     }
+    // Deprecated fields.
+    // 弃用的字段。
+    reserved 6;
 }
