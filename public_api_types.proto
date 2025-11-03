@@ -53,6 +53,13 @@ enum RobotType {
     RtPureForwardOnly = 100;
 }
 
+enum SecondaryDeviceType {
+    SdtUnknown = 0;
+    SdtHandGp100 = 1;
+    SdtGamepad = 2;
+    SdtImuY200 = 3;
+}
+
 //////// Base //////////
 
 // Base State
@@ -216,13 +223,8 @@ message ArmStatus {
     optional ParkingStopDetail parking_stop_detail = 5;
 }
 
-enum HandType {
-    HtInvalid = 0;
-    HtGp100 = 1;
-}
-
 message HandStatus {
-    HandType hand_type = 1;
+    reserved 1;
     repeated MotorStatus motor_status = 2;
 }
 
@@ -442,7 +444,8 @@ message SecondaryDeviceStatus {
 message SecondaryDeviceCommand {
     // Basically the same as device_id in SecondaryDeviceStatus.
     uint32 device_id = 1;
-    reserved 2 to 10;
+    SecondaryDeviceType device_type = 2;
+    reserved 3 to 10;
     oneof command{
         HandCommand hand_command = 12;
     }
