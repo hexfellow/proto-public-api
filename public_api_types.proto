@@ -79,6 +79,7 @@ message BaseEstimatedOdometry {
     double pos_y = 5; // m
     double pos_z = 6; // rad
 }
+
 message BaseStatus {
     BaseState state = 1;
 
@@ -203,17 +204,11 @@ message LinearLiftCommand {
 }
 
 //////// Arm //////////
-enum ArmMode {
-    AmBrake = 0;
-    AmApiControl = 1;
-    AmFreeDrag = 2; // Floating, ZeroForce feel, etc
-    AmZeroCurrent = 3;
-}
 
 message ArmStatus {
     // Weather the API control is initialized.
     bool api_control_initialized = 1;
-    ArmMode current_mode = 2;
+    reserved 2;
     bool calibrated = 3;
     repeated MotorStatus motor_status = 4;
     uint32 session_holder = 6;
@@ -232,6 +227,21 @@ message HandCommand {
     MotorTargets motor_targets = 1;
 }
 
+// Putting an empty message here for now.
+// Making it possible to extend in the future, e.g. adding percentage of friction compensation.
+message ArmApiFreeDragCommand {}
+
+message ArmApiZeroCurrentCommand {}
+
+message ArmApiControlCommand {
+    oneof command {
+        // Lowest API. Gives you direct control over motors.
+        MotorTargets motor_targets = 1;
+        ArmApiFreeDragCommand arm_api_free_drag_command = 2;
+        ArmApiZeroCurrentCommand arm_api_zero_current_command = 3;
+    }
+}
+
 message ArmSharedCommand {
     oneof command{
         bool clear_parking_stop = 1;
@@ -240,18 +250,15 @@ message ArmSharedCommand {
 }
 
 message ArmExclusiveCommand {
+    reserved 2, 3, 5;
     oneof exclusive_command {
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
-        // If currently has a clearable parking stop, the parking stop state will be cleared.
-        bool clear_parking_stop = 2;
-        // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
-        // The API does not support simple speed control.
-        MotorTargets motor_targets = 3;
+        // You have to continuesly send this command if you want to use api control.
+        ArmApiControlCommand arm_api_control_command = 6;
         // Just in case
         bool calibrate = 4;
     }
-    ArmMode target_mode = 5;
 }
 
 message ArmCommand {
