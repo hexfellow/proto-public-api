@@ -433,8 +433,9 @@ message SecondaryDeviceStatus {
     //   all of its SecondaryDevices will have certain device_id. (e.g. For Base, IMU is always 1, Gamepad is always 2, etc.)
     // When sending command down, device_id must match the device_id in the command.
     uint32 device_id = 1;
+    SecondaryDeviceType device_type = 2;
     // For future expansion.
-    reserved 2 to 10;
+    reserved 3 to 10;
     oneof status{
         // Imu's raw data. Independent of mounting position. This is tricky because different robot types have different mounting positions. Not all robot types have imu.
         // Imu 的原始数据。与安装位置无关。请特别注意不同机器人类型有不同的安装位置。不是所有机器人类型都有 imu。
@@ -451,8 +452,7 @@ message SecondaryDeviceStatus {
 message SecondaryDeviceCommand {
     // Basically the same as device_id in SecondaryDeviceStatus.
     uint32 device_id = 1;
-    SecondaryDeviceType device_type = 2;
-    reserved 3 to 10;
+    reserved 2 to 10;
     oneof command{
         HandCommand hand_command = 12;
     }
