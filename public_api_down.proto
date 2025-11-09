@@ -27,6 +27,17 @@ message APIDown {
         // There might be multiple secondary devices. Send commands to different devices separately.
         // 可能有多台次级设备。请分别发送命令到不同的设备。
         SecondaryDeviceCommand secondary_device_command = 7;
+        // Turn On the KCP connection.
+        // Please remember to change websocket Report Frequency to Rf1Hz, if you want to use KCP.
+        // And do not kill websocket connection, if you want to use KCP.
+        // Why? This is learned from https://github.com/skywind3000/kcp/wiki/Cooperate-With-Tcp-Server
+        // Basically, we consider KCP connection dead, if websocket connection is dead.
+        // After sending this, and you find kcp_config in APIUp, you can start to send data to the robot using KCP.
+        // The server will NOT send data before it receives the first message from the client, using KCP.
+        EnableKcp enable_kcp = 8;
+        // This is a placeholder message. This message will be ignored by the server, but server still considers getting stuff from client.
+        // Can be used to start KCP connection, since server will not start sending until it receives the first message from the client, using KCP.
+        bool placeholder_message = 100;
     }
     // Deprecated fields.
     // 弃用的字段。

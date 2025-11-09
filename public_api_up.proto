@@ -45,6 +45,10 @@ message APIUp {
     // 识别不同的 websocket 连接。值不会为零。
     uint32 session_id = 15;
 
+    // If KCP connection is enabled, this field will be present.
+    // This field will not change after connection is established.
+    optional KcpConfig kcp_config = 19;
+
     // Deprecated fields.
     // 弃用的字段。
     reserved 10,11,13;

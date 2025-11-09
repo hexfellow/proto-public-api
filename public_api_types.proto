@@ -302,6 +302,38 @@ enum ReportFrequency {
     Rf250Hz = 4;
     Rf100Hz = 1;
     Rf50Hz = 2;
+    // 1Hz to keep the KCP alive
+    // When using KCP Option, if websocket dies, KCP connection is considered dead too.
+    // The report frequency of KCP and Websocket of the same session id is independent.
+    Rf1Hz = 5;
+}
+
+message EnableKcp {
+    // KCP message must come from the same IP and port specified here.
+    // Peer message not from this will be ignored.
+    // Can not use 0.
+    uint32 client_peer_port = 1;
+    KcpConfig kcp_config = 2;
+}
+
+message KcpConfig {
+    // Must be positive.
+    // Please just use 64, unless you really know what you are doing.
+    int32 window_size_snd_wnd = 1;
+    // Must be positive.
+    // Please just use 64, unless you really know what you are doing.
+    int32 window_size_rcv_wnd = 2;
+    // Please just use 10, unless you really know what you are doing.
+    int32 interval_ms = 3;
+    // Enable no delay.
+    // PLEASE send TRUE. DO NOT send FALSE.
+    bool no_delay = 4;
+    // Disable congestion control.
+    // PLEASE send TRUE. DO NOT send FALSE.
+    bool nc = 5;
+    // Please just use 2. DO NOT CHANGE
+    // Must be positive.
+    int32 resend = 6;
 }
 
 
