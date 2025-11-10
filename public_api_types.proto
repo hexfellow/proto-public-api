@@ -316,6 +316,13 @@ message EnableKcp {
     KcpConfig kcp_config = 2;
 }
 
+message KcpServerStatus {
+    // For now server_port will change with different connections.
+    // This might be changed in the future, to use a fixed port for all KCP connections.
+    uint32 server_port = 1;
+    KcpConfig kcp_config = 2;
+}
+
 message KcpConfig {
     // Must be positive.
     // Please just use 64, unless you really know what you are doing.

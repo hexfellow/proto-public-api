@@ -24,7 +24,7 @@ Websocket已经被广泛应用于全世界的各个领域，此处不再赘述�
 
 握手大致流程：
 1. 连接上 Websocket, 客户端从 WebSocket 获取 session id。然后发送 APIDown.EnableKcp 消息。EnableKcp 中 client_peer_port 填写 Client 所使用的 Socket 的端口。kcp_config 请使用注释中提供的默认值。
-2. 等待 APIUp 中的 kcp_config 出现。
-3. 更改 Websocket 的报告频率为 Rf1Hz。（可选但强烈建议，因为接下来Websocket连接意义不大了，仅用于保证KCP连接的存活）
-4. 从KCP主动发送一条APIDown消息，来通知Server可以开始发送数据。
+2. 等待 APIUp 中的 kcp_config 出现。从 kcp_config 中获取 KCP 连接端口。
+3. 从KCP主动发送一条APIDown消息，来通知Server可以开始发送数据。
+4. 更改 Websocket 的报告频率为 Rf1Hz。（可选但强烈建议，因为接下来Websocket连接意义不大了，仅用于保证KCP连接的存活）
 5. 可以愉快的正常通信了。注意此时仍然可以从 Websocket 获取数据，并且 KCP 和 Websocket 将会有相同的 session id，意味着控制权是共享的。

@@ -47,7 +47,7 @@ message APIUp {
 
     // If KCP connection is enabled, this field will be present.
     // This field will not change after connection is established.
-    optional KcpConfig kcp_config = 19;
+    optional KcpServerStatus kcp_server_status = 19;
 
     // Deprecated fields.
     // 弃用的字段。
