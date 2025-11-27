@@ -10,6 +10,28 @@ Unless otherwise specified, the WebSocket service runs on port 8439.
 
 Please note that you need to set TCP_NODELAY and TCP_QUICKACK to get the best performance.
 
+# Advanced Reading
+
+Please note that the following features are advanced features. Unless specifically stated, we **do not provide** any explanation or technical support for these features. If you do not have enough knowledge, please do not use these features.
+
+
+## PTP Time Synchronization
+
+> This section is for advanced readers. If you don't have enough knowledge, please do not use time synchronization. We also **do not provide** any explanation or technical support for time synchronization.
+
+The system allows using PTP (IEEE 1588) to achieve high-precision sub-millisecond time synchronization.
+
+All main controllers will only be Slave, DOMAIN will be 0.
+
+If you want to use PTP, it is recommended to use a network card with hardware timestamps. See the part of `System Requirements` in `https://linuxptp.sourceforge.net/` for more information.
+
+e.g.
+```bash
+sudo ptp4l -i enp3s0 -A -m -q
+```
+
+You can check if the time synchronization is successful by using the `pmc` command. For example, `pmc -u 'GET PORT_DATA_SET'` to view the current status of each `portIdentity`. The `portIdentity` is usually related to the MAC address of the network card. When all main controllers' statuses change to `SLAVE`, it means the time synchronization is successful.
+
 ## KCP Connection
 
 > This section is for advanced readers. If you don't have enough knowledge, please use WebSocket connection.

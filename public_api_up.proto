@@ -49,6 +49,10 @@ message APIUp {
     // This field will not change after connection is established.
     optional KcpServerStatus kcp_server_status = 19;
 
+    // Our products allow using PTP (IEEE 1588) to achieve high-precision sub-millisecond time synchronization.
+    // Check calibrated field in PtpTimeStamp to see if the time is calibrated.
+    optional TimeStamp time_stamp = 20;
+
     // Deprecated fields.
     // 弃用的字段。
     reserved 10,11,13;
