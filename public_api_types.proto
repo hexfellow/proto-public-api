@@ -459,6 +459,31 @@ message MotorStatus {
     optional float voltage = 13;
 }
 
+// Hello actully stands for HexGello :)
+// HexGelloSingleJoystickSingleTrigger5BtnControllerStatus
+message Hello1J1T5BStatus {
+    // -1.0 to 1.0
+    float joystick_x = 1;
+    // -1.0 to 1.0
+    float joystick_y = 2;
+    // 0.0 to 1.0
+    float trigger = 3;
+    bool btn_a = 4;
+    bool btn_b= 5;
+    bool btn_x = 6;
+    bool btn_y = 7;
+    bool btn_dir = 8;
+}
+
+// HexGelloSingleJoystickSingleTrigger5BtnControllerCommand
+message Hello1J1T5BCmd {
+    // When sending less than required number of rgbs, the remaining rgbs will remain its current color.
+    // When sending more than required number of rgbs, the extra rgbs will be ignored.
+    // Though it is int32, only 24 bits are used. The highest 8 bits are ignored.
+    // Convert this int32 into little endian bytes, [0] will be Red channel, [1] will be Green channel, [2] will be Blue channel. [3] is ignored.
+    repeated int32 rgbs = 1;
+}
+
 // Hand, 3+3 Arms, etc
 message SecondaryDeviceStatus {
     // Can be used to tell from different devices, e.g. Imu1, Imu2, Hand1, Hand2, Gamepad1, Gamepad2, etc.
@@ -480,6 +505,7 @@ message SecondaryDeviceStatus {
         // Gamepad read. Optional.
         // 遥控器读取的数据。仅供参考
         GamepadRead gamepad_read = 13;
+        Hello1J1T5BStatus hello1j1t5b_status = 14;
     }
 }
 
@@ -489,6 +515,7 @@ message SecondaryDeviceCommand {
     reserved 2 to 10;
     oneof command{
         HandCommand hand_command = 12;
+        Hello1J1T5BCmd hex_gello_single_joystick_single_trigger_5_btn_controller_command = 14;
     }
 }
 
