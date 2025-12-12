@@ -14,29 +14,24 @@ enum RobotType {
     RtUnknown = 0;
 
     ////// Bases //////
-    ////// 底盘机器人 //////
     RtTriggerA3 = 1;
-    RtMaverX4 = 2;
+    RtMaverX4D = 2;
     // Custom PCW vehicle. No matter how many PCW modules are used, all of them are treated as this same type of vehicle.
     RtCustomPcwVehicle = 4;
-    RtMaverL4 = 20;
-    RtMaverL2 = 21;
+    RtMaverL4D = 20;
     RtMark1DiffBBDriver = 6;
     RtArk2LrDriver = 5;
+    RtMaverX3H1 = 23;
 
     ////// Linear Lifts //////
-    ////// 线性升降机 //////
     // Linear Lifts can only be controlled by position with max speed.
-    // 线性升降机只能通过位置控制，并且有最大速度限制。
-    RtLotaLinearLiftV1 = 8;
+    RtLotaD1Vc1 = 18;
+    RtLotaD2Vc1 = 22;
 
     ////// Rotational Lifts //////
-    ////// 旋转升降机 //////
-    RtZeta3LiftV1 = 13;
+    RtZetaD3Vc2 = 19;
 
     ////// Arm //////
-    ////// 机械臂 //////
-    reserved 9 to 12, 7;
     RtArmSaberD6x = 14;
     RtArmSaberD7x = 15;
     // Current MainStream Products
@@ -46,6 +41,14 @@ enum RobotType {
     ////// Special modes //////
     // Working purely as a can bus forwarder.
     RtPureForwardOnly = 100;
+
+    ////// About to move on //////
+    RtLotaP1 = 8;
+    RtMaverL2 = 21;
+    RtZetaD3Vc1 = 13;
+
+    ////// Deprecated //////
+    reserved 7, 9 to 12;
 }
 
 enum SecondaryDeviceType {
@@ -53,6 +56,7 @@ enum SecondaryDeviceType {
     SdtHandGp100 = 1;
     SdtGamepad = 2;
     SdtImuY200 = 3;
+    SdtHandGp80G1 = 4;
 }
 
 //////// Base //////////
@@ -394,14 +398,12 @@ message ParkingStopDetail {
 }
 
 // Warning category.
-// 警告类别。
 enum WarningCategory {
     WcUnknownWarningCategory = 0;
     WcBatteryLow = 1;
 }
 
 //////// Motor //////////
-// 单个电机的目标。后续可能增加更多目标值
 message SingleMotorTarget{
     oneof target{
         double torque = 1;  // Nm
