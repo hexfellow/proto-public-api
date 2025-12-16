@@ -26,10 +26,11 @@ enum RobotType {
     ////// Linear Lifts //////
     // Linear Lifts can only be controlled by position with max speed.
     RtLotaD1Vc1 = 18;
-    RtLotaD2Vc1 = 22;
+    RtThetaD1Vc1 = 24;
 
     ////// Rotational Lifts //////
     RtZetaD3Vc2 = 19;
+    RtLotaD2Vc1 = 22;
 
     ////// Arm //////
     RtArmSaberD6x = 14;
