@@ -448,6 +448,7 @@ message MotorStatus {
     // Number of pulses per rotation, output asix
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
+    // If given 0.0 or negative, means wheel_radius is not known or applicable.
     double wheel_radius = 6;
 
     repeated MotorError error = 7;
@@ -455,7 +456,7 @@ message MotorStatus {
 
     optional float driver_temperature = 11;
     optional float motor_temperature = 12;
-    // current suppiled voltage
+    // Current supplied voltage
     optional float voltage = 13;
 }
 
