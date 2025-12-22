@@ -53,6 +53,9 @@ message APIUp {
     // Check calibrated field in PtpTimeStamp to see if the time is calibrated.
     optional TimeStamp time_stamp = 20;
 
+    // Bus voltage in volts.
+    optional float main_bus_voltage = 21;
+
     // Deprecated fields.
     // 弃用的字段。
     reserved 10,11,13;
