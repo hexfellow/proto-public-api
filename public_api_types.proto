@@ -89,6 +89,7 @@ message BaseStatus {
 
     // Only avalible on vehicles that have BMS.
     optional bool battery_charging = 10;
+    optional float battery_current = 14;
     optional ParkingStopDetail parking_stop_detail = 11;
     optional WarningCategory warning = 12;
     // Not all base types support this!
