@@ -33,6 +33,10 @@ message APIUp {
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
     // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。
+    // Expect Major Device Id to be:
+    // 1. End Controller: Can be hand, hello end controller, etc.
+    // 2. Imu: 
+    // 3. Gamepad:
     repeated SecondaryDeviceStatus secondary_device_status = 16;
     // Optional log message. Unless you are interested in the log, you can ignore this field.
     // 可选的日志消息。除非您对日志感兴趣，否则可以忽略这个字段不解析。
