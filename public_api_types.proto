@@ -35,6 +35,7 @@ enum RobotType {
     RtArmArcherD6Y_P1 = 16;
     RtArmArcherY6L_V1 = 17;
     RtArmArcherY6_H1 = 25;
+    RtHelloArcherY6_H1 = 26;
     
     ////// Special modes //////
     // Working purely as a can bus forwarder.
@@ -55,6 +56,9 @@ enum SecondaryDeviceType {
     SdtGamepad = 2;
     SdtImuY200 = 3;
     SdtHandGp80G1 = 4;
+    // | Vendor ID    | 0x00686578 |
+    // | Product ID   | 0x00001146 |
+    SdtHello1J1T4BV1 = 5;
 }
 
 //////// Base //////////
@@ -462,8 +466,8 @@ message MotorStatus {
 }
 
 // Hello actully stands for HexGello :)
-// HexGelloSingleJoystickSingleTrigger5BtnControllerStatus
-message Hello1J1T5BStatus {
+// HexGelloSingleJoystickSingleTrigger4BtnControllerStatus
+message Hello1J1T4BStatus {
     // -1.0 to 1.0
     float joystick_x = 1;
     // -1.0 to 1.0
@@ -474,11 +478,11 @@ message Hello1J1T5BStatus {
     bool btn_b= 5;
     bool btn_x = 6;
     bool btn_y = 7;
-    bool btn_dir = 8;
 }
 
-// HexGelloSingleJoystickSingleTrigger5BtnControllerCommand
-message Hello1J1T5BCmd {
+// Naming inspired by GELLO
+// HELLOSingleJoystickSingleTrigger4BtnControllerCommand
+message Hello1J1T4BCmd {
     // When sending less than required number of rgbs, the remaining rgbs will remain its current color.
     // When sending more than required number of rgbs, the extra rgbs will be ignored.
     // Though it is int32, only 24 bits are used. The highest 8 bits are ignored.
@@ -507,7 +511,7 @@ message SecondaryDeviceStatus {
         // Gamepad read. Optional.
         // 遥控器读取的数据。仅供参考
         GamepadRead gamepad_read = 13;
-        Hello1J1T5BStatus hello1j1t5b_status = 14;
+        Hello1J1T4BStatus hello1j1t4b_status = 14;
     }
 }
 
@@ -517,7 +521,7 @@ message SecondaryDeviceCommand {
     reserved 2 to 10;
     oneof command{
         HandCommand hand_command = 12;
-        Hello1J1T5BCmd hex_gello_single_joystick_single_trigger_5_btn_controller_command = 14;
+        Hello1J1T4BCmd hello1j1t4b_controller_command = 14;
     }
 }
 
