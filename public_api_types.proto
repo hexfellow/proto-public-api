@@ -480,14 +480,20 @@ message Hello1J1T4BStatus {
     bool btn_y = 7;
 }
 
+message RGBStripeCommand{
+    // Though it is int32, only 24 bits are used. The highest 8 bits are ignored(For now).
+    // Convert this int32 into little endian u8, [0] will be Red channel, [1] will be Green channel, [2] will be Blue channel. [3] is ignored.
+    repeated int32 rgbs = 1;
+}
+
 // Naming inspired by GELLO
 // HELLOSingleJoystickSingleTrigger4BtnControllerCommand
 message Hello1J1T4BCmd {
-    // When sending less than required number of rgbs, the remaining rgbs will remain its current color.
-    // When sending more than required number of rgbs, the extra rgbs will be ignored.
-    // Though it is int32, only 24 bits are used. The highest 8 bits are ignored.
-    // Convert this int32 into little endian bytes, [0] will be Red channel, [1] will be Green channel, [2] will be Blue channel. [3] is ignored.
-    repeated int32 rgbs = 1;
+    oneof command{
+        // When sending less than required number of rgbs, the remaining rgbs will remain its current color.
+        // When sending more than required number of rgbs, the extra rgbs will be ignored.
+        RGBStripeCommand rgb_stripe_command = 1;
+    }
 }
 
 // Hand, 3+3 Arms, etc
