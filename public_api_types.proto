@@ -36,6 +36,8 @@ enum RobotType {
     RtArmArcherY6L_V1 = 17;
     RtArmArcherY6_H1 = 25;
     RtHelloArcherY6_H1 = 26;
+    RtArmFireflyY6_H1 = 27;
+    RtHelloFireflyY6_H1 = 28;
     
     ////// Special modes //////
     // Working purely as a can bus forwarder.
