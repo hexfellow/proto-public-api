@@ -231,11 +231,36 @@ message HandCommand {
     MotorTargets motor_targets = 1;
 }
 
+message AccelerationSource {
+    oneof source {
+        ImuAcceleration custom_acceleration = 1;
+        // Its possible to add e.g. onboard accelerometer in the future.
+    }
+}
+
 // Putting an empty message here for now.
 // Making it possible to extend in the future, e.g. adding percentage of friction compensation.
-message ArmApiFreeDragCommand {}
+message ArmApiFreeDragCommand {
+    // Must not be none. If so will fail
+    AccelerationSource acceleration_source = 1;
+}
 
 message ArmApiZeroCurrentCommand {}
+
+message Pose {
+    double px = 1;
+    double py = 2;
+    double pz = 3;
+    double qw = 4;
+    double qx = 5;
+    double qy = 6;
+    double qz = 7;
+}
+
+message ArmApiEndEffectorCommand {
+    Pose pose_target = 1;
+    optional AccelerationSource acceleration_source = 2;
+}
 
 message ArmApiControlCommand {
     oneof command {
@@ -243,6 +268,7 @@ message ArmApiControlCommand {
         MotorTargets motor_targets = 1;
         ArmApiFreeDragCommand arm_api_free_drag_command = 2;
         ArmApiZeroCurrentCommand arm_api_zero_current_command = 3;
+        ArmApiEndEffectorCommand arm_api_end_effector_command = 4;
     }
 }
 
@@ -416,10 +442,23 @@ message SingleMotorTarget{
         int64 position = 3; // encoder position
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
+        CompensatedMitMotorTarget compensated_mit_target = 6;  // Not all motors support this. The model will be additionally equipped with compensatory forces.
+        FollowMotorTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
     }
 }
 
+message FollowMotorTarget {
+    double speed = 2;   // rad/s
+    int64 position = 3; // encoder position
+}
+
 // todo Add speed with max torque, and position with max torque and speed.
+
+message CompensatedMitMotorTarget {
+    // Both must not be none.
+    MitMotorTarget mit_target = 1;
+    AccelerationSource acceleration_source = 2;
+}
 
 message MitMotorTarget {
     double torque = 1;  // Nm
