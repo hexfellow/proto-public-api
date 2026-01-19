@@ -10,6 +10,9 @@ Websocket已经被广泛应用于全世界的各个领域，此处不再赘述�
 
 请注意，您需要设置 TCP_NODELAY 以及 TCP_QUICKACK，以得到最小延迟的效果。
 
+# 版本历史
+
+可以通过引用 `version.py`, 或 `version.rs` 文件来获取当前的版本号。
 
 # 拓展阅读
 

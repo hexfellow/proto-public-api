@@ -10,6 +10,10 @@ Unless otherwise specified, the WebSocket service runs on port 8439.
 
 Please note that you need to set TCP_NODELAY and TCP_QUICKACK to get the best performance.
 
+# Version History
+
+You can get the current version number by referencing `version.py`, or `version.rs` file.
+
 # Advanced Reading
 
 Please note that the following features are advanced features. Unless specifically stated, we **do not provide** any explanation or technical support for these features. If you do not have enough knowledge, please do not use these features.
