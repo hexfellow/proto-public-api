@@ -269,7 +269,24 @@ message ArmApiControlCommand {
         ArmApiFreeDragCommand arm_api_free_drag_command = 2;
         ArmApiZeroCurrentCommand arm_api_zero_current_command = 3;
         ArmApiEndEffectorCommand arm_api_end_effector_command = 4;
+        ArmApiJointPositionCommand arm_api_joint_position_command = 5;
+        ArmApiPoseCommand arm_api_pose_command = 6;
+        ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
     }
+}
+
+message ArmApiCompensatedMitMotorTargets {
+    // Both must not be none.
+    repeated MitMotorTarget mit_target = 1;
+    AccelerationSource acceleration_source = 2;
+}
+
+message ArmApiPoseCommand {
+    Pose pose = 1;
+}
+
+message ArmApiJointPositionCommand {
+    repeated double joint_positions = 1;
 }
 
 message ArmSharedCommand {
@@ -436,13 +453,13 @@ enum WarningCategory {
 
 //////// Motor //////////
 message SingleMotorTarget{
+    reserved 6;
     oneof target{
         double torque = 1;  // Nm
         double speed = 2;   // rad/s
         int64 position = 3; // encoder position
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
-        CompensatedMitMotorTarget compensated_mit_target = 6;  // Not all motors support this. The model will be additionally equipped with compensatory forces.
         FollowMotorTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
     }
 }
@@ -453,12 +470,6 @@ message FollowMotorTarget {
 }
 
 // todo Add speed with max torque, and position with max torque and speed.
-
-message CompensatedMitMotorTarget {
-    // Both must not be none.
-    MitMotorTarget mit_target = 1;
-    AccelerationSource acceleration_source = 2;
-}
 
 message MitMotorTarget {
     double torque = 1;  // Nm
