@@ -524,7 +524,7 @@ message Hello1J1T4BStatus {
     float joystick_x = 1;
     // -1.0 to 1.0
     float joystick_y = 2;
-    // 0.0 to 1.0
+    // -1.0 to 1.0
     float trigger = 3;
     bool btn_a = 4;
     bool btn_b= 5;
