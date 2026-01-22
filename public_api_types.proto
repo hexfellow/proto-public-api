@@ -147,9 +147,11 @@ message RotateLiftStatus {
     bool calibrated = 1;
     LiftState state = 2;
     repeated MotorStatus motor_status = 3;
-    // todo consider move max_pos and min_pos to MotorStatus as a optional field
+    // field 4,5 will soon be removed. Users should read limitations from URDF.
     repeated int32 max_pos = 4;
     repeated int32 min_pos = 5;
+    // 0 means no session holder.
+    uint32 session_holder = 6;
     optional ParkingStopDetail parking_stop_detail = 10;
 }
 
