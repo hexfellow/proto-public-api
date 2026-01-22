@@ -79,8 +79,6 @@ Byte[2] 与 [3] 为小端序的数据长度
     }
 ```
 
-
-
 同时，参考了 https://github.com/skywind3000/kcp/wiki/Cooperate-With-Tcp-Server 的建议，如果 Websocket 连接断开，KCP 连接也会被认为断开。
 
 握手大致流程：
@@ -89,3 +87,12 @@ Byte[2] 与 [3] 为小端序的数据长度
 3. 从KCP主动发送一条APIDown消息，来通知Server可以开始发送数据。
 4. 更改 Websocket 的报告频率为 Rf1Hz。（可选但强烈建议，因为接下来Websocket连接意义不大了，仅用于保证KCP连接的存活）
 5. 可以愉快的正常通信了。注意此时仍然可以从 Websocket 获取数据，并且 KCP 和 Websocket 将会有相同的 session id，意味着控制权是共享的。
+
+## 使用仓库提供的 version.rs
+
+```rust
+#[path = "proto-public-api/version.rs"]
+pub mod proto_public_api_version;
+```
+
+更改 `path=` 这个路径为实际路径即可。

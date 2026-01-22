@@ -86,3 +86,12 @@ The handshake process is as follows:
 3. Send an APIDown message from the KCP to notify the Server that the data can be sent.
 4. Change the report frequency of the WebSocket to Rf1Hz. (Optional but strongly recommended, because the WebSocket connection is not useful after this, and is only used to keep the KCP connection alive)
 5. You can now communicate normally. Note that you can still get data from the WebSocket at this time, and the KCP and WebSocket of the same session id will have the same session id, which means the control is shared.
+
+## Use the version.rs file provided by the repository
+
+```rust
+#[path = "proto-public-api/version.rs"]
+pub mod proto_public_api_version;
+```
+
+Change the `path=` to the actual path.
