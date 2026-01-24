@@ -528,10 +528,10 @@ message Hello1J1T4BStatus {
     float joystick_y = 2;
     // -1.0 to 1.0
     float trigger = 3;
-    bool btn_a = 4;
-    bool btn_b= 5;
     bool btn_x = 6;
     bool btn_y = 7;
+    bool btn_z = 4;
+    bool btn_w= 5;
 }
 
 message RGBStripeCommand{
