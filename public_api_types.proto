@@ -54,9 +54,10 @@ enum RobotType {
 
 enum SecondaryDeviceType {
     SdtUnknown = 0;
-    SdtHandGp100Handle = 1;
+    SdtHandGp100 = 1;
     SdtHandGp100P050 = 100;
     SdtHandGp100P050Handle = 101;
+    SdtHandGp100Handle = 102;
     SdtGamepad = 2;
     SdtImuY200 = 3;
     SdtHandGp80G1 = 4;
