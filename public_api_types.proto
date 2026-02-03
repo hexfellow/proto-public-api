@@ -513,6 +513,7 @@ message MotorStatus {
     double wheel_radius = 6;
 
     repeated MotorError error = 7;
+    optional string motor_warning = 14;
     SingleMotorTarget current_target = 8;
 
     optional float driver_temperature = 11;
