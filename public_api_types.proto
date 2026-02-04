@@ -263,7 +263,8 @@ message Pose {
 }
 
 message ArmApiEndEffectorCommand {
-    Pose pose_target = 1;
+    Pose end_pose = 1;
+    // Optional. If not provided, gravity compensation will not be applied.
     optional AccelerationSource acceleration_source = 2;
 }
 
@@ -271,11 +272,15 @@ message ArmApiControlCommand {
     oneof command {
         // Lowest API. Gives you direct control over motors.
         MotorTargets motor_targets = 1;
+        // Put the robotic arm into free movement mode with gravity compensation.
         ArmApiFreeDragCommand arm_api_free_drag_command = 2;
+        // Put all the motors of the arm into zero-torque mode.
         ArmApiZeroCurrentCommand arm_api_zero_current_command = 3;
+        // End effector pose control. Please note that this mode will no longer be applicable if the robotic arm has been modified.
         ArmApiEndEffectorCommand arm_api_end_effector_command = 4;
+        // A more convenient positioning mode that will plan the target position before moving.
         ArmApiJointPositionCommand arm_api_joint_position_command = 5;
-        ArmApiPoseCommand arm_api_pose_command = 6;
+        // Compensated MIT control mode. It will be more precise.
         ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
     }
 }
@@ -286,11 +291,8 @@ message ArmApiCompensatedMitMotorTargets {
     AccelerationSource acceleration_source = 2;
 }
 
-message ArmApiPoseCommand {
-    Pose pose = 1;
-}
-
 message ArmApiJointPositionCommand {
+    // Joint positions in rad.
     repeated double joint_positions = 1;
 }
 
