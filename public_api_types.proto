@@ -269,6 +269,7 @@ message ArmApiEndEffectorCommand {
 }
 
 message ArmApiControlCommand {
+    reserved 6;
     oneof command {
         // Lowest API. Gives you direct control over motors.
         MotorTargets motor_targets = 1;
