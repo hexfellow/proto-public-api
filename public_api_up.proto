@@ -32,7 +32,8 @@ message APIUp {
         ArmStatus arm_status = 4;
         // Only available for RtPureForwardOnlyV2 robot type.
         // Will forward all CAN frames to the client.
-        HexCanApiCanAnyFrame hex_can_api_can_any_frame = 22;
+        // Underlaying hardware will only report at max frequency 1000Hz. So all frames in 1ms will be packed into one message.
+        HexCanApiCanAnyFrames hex_can_api_can_any_frames = 22;
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
     // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。

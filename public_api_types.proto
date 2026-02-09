@@ -623,6 +623,10 @@ enum HexCanApiCanBusNumber {
     Hcan2 = 2;
 }
 
+message HexCanApiCanAnyFrames {
+    repeated HexCanApiCanAnyFrame frames = 1;
+}
+
 message HexCanApiCanAnyFrame {
     HexCanApiCanBusNumber bus_number = 1;
     oneof frame {
