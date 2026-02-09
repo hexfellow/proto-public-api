@@ -43,6 +43,7 @@ enum RobotType {
     // Forward CAN bus just using messages defined here.
     // Baudrates, fd, etc should be predefined via config file.
     RtPureForwardOnlyV2 = 101;
+    // todo might adding cannelloni, if it out performs KCP in performance.
 
     ////// About to move on //////
     RtZetaVc1 = 13;
@@ -625,20 +626,20 @@ enum HexCanApiCanBusNumber {
 message HexCanApiCanAnyFrame {
     HexCanApiCanBusNumber bus_number = 1;
     oneof frame {
-        HexCanApiCanDataFrame can_data_frame = 1;
-        HexCanApiCanFdFrame can_fd_frame = 2;
+        HexCanApiCanDataFrame can_data_frame = 2;
+        HexCanApiCanFdFrame can_fd_frame = 3;
         // todo add remote and error later
     }
 }
 
 message HexCanApiCanDataFrame {
     HexCanApiCanId id = 1;
-    repeated u8 data = 2;
+    bytes data = 2;
 }
 
 message HexCanApiCanFdFrame {
     HexCanApiCanId id = 1;
-    repeated u8 data = 2;
+    bytes data = 2;
     // Well there are three flags, CANFD_BRS, CANFD_ESI, CANFD_FDF. Only brs is meaningful for now.
     // For more info, check uapi/linux/can.h
     bool brs = 4;
@@ -646,7 +647,7 @@ message HexCanApiCanFdFrame {
 
 message HexCanApiCanId {
     oneof id {
-        u16 standard_id = 1;
-        u32 extended_id = 2;
+        uint32 standard_id = 1;
+        uint32 extended_id = 2;
     }
 }
