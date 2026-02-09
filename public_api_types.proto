@@ -618,9 +618,10 @@ message TimeStamp {
 /// ---------------------
 
 enum HexCanApiCanBusNumber {
-    Hcan0 = 0;
-    Hcan1 = 1;
-    Hcan2 = 2;
+    HcanInvalid = 0;
+    Hcan0 = 1;
+    Hcan1 = 2;
+    Hcan2 = 3;
 }
 
 message HexCanApiCanAnyFrames {
