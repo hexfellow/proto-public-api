@@ -30,6 +30,9 @@ message APIUp {
         // Arms will use this field.
         // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
+        // Only available for RtPureForwardOnlyV2 robot type.
+        // Will forward all CAN frames to the client.
+        HexCanApiCanAnyFrame hex_can_api_can_any_frame = 22;
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
     // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。

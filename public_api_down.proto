@@ -35,6 +35,9 @@ message APIDown {
         // After sending this, and you find kcp_config in APIUp, you can start to send data to the robot using KCP.
         // The server will NOT send data before it receives the first message from the client, using KCP.
         EnableKcp enable_kcp = 8;
+        // Only available for RtPureForwardOnlyV2 robot type.
+        // Sending arbitrary CAN frames to the robot's CAN bus. Other robots will ignore this message.
+        HexCanApiCanAnyFrame hex_can_api_can_any_frame = 9;
         // This is a placeholder message. This message will be ignored by the server, but server still considers getting stuff from client.
         // Can be used to start KCP connection, since server will not start sending until it receives the first message from the client, using KCP.
         bool placeholder_message = 100;
