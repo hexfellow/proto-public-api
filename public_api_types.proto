@@ -42,6 +42,9 @@ enum RobotType {
     ////// Special modes //////
     // Forward CAN bus just using messages defined here.
     // Baudrates, fd, etc should be predefined via config file.
+    // KCP is mandatory for this robot. Websocket will not work.
+    // Also, please make sure only one connection is using this robot type. (KCP + Websocket pair is counted as one connection)
+    // If you use multiple connections, you will loss can messages from the robot.
     RtPureForwardOnlyV2 = 101;
     // todo might adding cannelloni, if it out performs KCP in performance.
 

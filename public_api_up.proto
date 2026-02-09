@@ -33,6 +33,8 @@ message APIUp {
         // Only available for RtPureForwardOnlyV2 robot type.
         // Will forward all CAN frames to the client.
         // Underlaying hardware will only report at max frequency 1000Hz. So all frames in 1ms will be packed into one message.
+        // KCP is mandatory for this. Websocket can only send can messages, but will never get can messages from the robot.
+        // Also, please make sure only one connection is using this robot type. (KCP + Websocket pair is counted as one connection)
         HexCanApiCanAnyFrames hex_can_api_can_any_frames = 22;
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
