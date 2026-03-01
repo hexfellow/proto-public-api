@@ -42,6 +42,10 @@ message APIDown {
         // Can be used to start KCP connection, since server will not start sending until it receives the first message from the client, using KCP.
         bool placeholder_message = 100;
     }
+    // These two fields should be same as version.py/version.rs provided in this repo. 
+    // Do not fill these fields to fake numbers, as this might break the compatibility checker.
+    uint32 protocol_major_version = 11;
+    uint32 protocol_minor_version = 12;
     // Deprecated fields.
     // 弃用的字段。
     reserved 6;
