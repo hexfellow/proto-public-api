@@ -16,7 +16,9 @@ enum RobotType {
     ////// Bases //////
     RtTriggerA3Lr1 = 1;
     RtMaverX4D = 2;
+    RtMaverX4H1 = 30;
     RtMaverL4D = 20;
+    RtMaverL4H1 = 31;
     RtArk2Lr1 = 5;
     RtMaverX3H1 = 23;
 
