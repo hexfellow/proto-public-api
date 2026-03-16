@@ -73,6 +73,7 @@ enum SecondaryDeviceType {
     // | Vendor ID    | 0x00686578 |
     // | Product ID   | 0x00001146 |
     SdtHello1J1T4BV1 = 5;
+    SdtHandGr100 = 6;
 }
 
 //////// Base //////////
