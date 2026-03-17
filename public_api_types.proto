@@ -9,37 +9,59 @@ syntax = "proto3";
 //////// Must read types //////////
 // ---------------------
 
+enum RobotMode {
+    RmStandby = 0;
+    RmRunning = 1;
+    RmFatalError = 2;
+    RmOvertaken = 3;
+}
+
+enum OvertakenMode {
+    OrUnknown = 0;
+    OrJoystick = 1;
+    OrCollisionSensor = 2;
+    OrCalibrating = 3;
+    OrMotorError = 4;
+    OrBatteryError = 5;
+}
+
+message TryExitOvertake{}
+
+message OvertakenReason {
+    OvertakenMode overtaken_mode = 1;
+    optional string human_readable_reason = 2;
+}
+
+// Warning category.
+enum WarningCategory {
+    WcUnknownWarningCategory = 0;
+    WcBatteryLow = 1;
+}
+
 enum RobotType {
     // Invalid Robot Type. This is the default value when you do a factory reset.
     RtUnknown = 0;
 
     ////// Bases //////
     RtTriggerA3Lr1 = 1;
-    RtMaverX4D = 2;
     RtMaverX4H1 = 30;
-    RtMaverL4D = 20;
     RtMaverL4H1 = 31;
     RtArk2Lr1 = 5;
     RtMaverX3H1 = 23;
 
     ////// Linear Lifts //////
     // Linear Lifts can only be controlled by position with max speed.
-    RtIotaP1 = 8;
-    RtIotaVc1 = 18;
     RtTheta1 = 24;
-
-    ////// Rotational Lifts //////
     RtZetaVc2 = 19;
     RtIotaVc2 = 22;
 
     ////// Arm //////
     // Current MainStream Products
-    RtArmArcherD6Y_P1 = 16;
-    RtArmArcherY6L_V1 = 17;
     RtArmArcherY6_H1 = 25;
     RtHelloArcherY6_H1 = 26;
     RtArmFireflyY6_H1 = 27;
     RtHelloFireflyY6_H1 = 28;
+    RtArmEmpty = 36;
     
     ////// Special modes //////
     // Forward CAN bus just using messages defined here.
@@ -48,17 +70,9 @@ enum RobotType {
     // Also, please make sure only one connection is using this robot type. (KCP + Websocket pair is counted as one connection)
     // If you use multiple connections, you will loss can messages from the robot.
     RtPureForwardOnlyV2 = 101;
-    // todo might adding cannelloni, if it out performs KCP in performance.
-
-    ////// About to move on //////
-    RtZetaVc1 = 13;
-    RtArmSaberD6x = 14;
-    RtArmSaberD7x = 15;
-    // Working purely as a can bus forwarder.
-    RtPureForwardOnly = 100;
 
     ////// Deprecated //////
-    reserved 4, 6, 7, 9 to 12, 21;
+    reserved 2, 4, 6 to 18, 20, 21, 100;
 }
 
 enum SecondaryDeviceType {
@@ -78,15 +92,6 @@ enum SecondaryDeviceType {
 
 //////// Base //////////
 
-// Base State
-enum BaseState {
-    BsParked = 0;
-    BsAlgrithmControl = 1;
-    BsOvertakeSpeedControl = 2;
-    BsOvertakeZeroResistanceControl = 3;
-    BsEmergencyStop = 4;
-}
-
 message BaseEstimatedOdometry {
     float speed_x = 1; // m/s
     float speed_y = 2; // m/s
@@ -97,19 +102,14 @@ message BaseEstimatedOdometry {
 }
 
 message BaseStatus {
-    BaseState state = 1;
-
-    // Weather the API control is initialized.
-    bool api_control_initialized = 2;
+    reserved 1;
     float battery_voltage = 3;                  // V
     uint32 battery_thousandth = 4;              // 1/1000
     repeated MotorStatus motor_status = 5;
-    uint32 session_holder = 6;                  // 0 means no session holder
 
     // Only avalible on vehicles that have BMS.
     optional bool battery_charging = 10;
     optional float battery_current = 14;
-    optional ParkingStopDetail parking_stop_detail = 11;
     optional WarningCategory warning = 12;
     // Not all base types support this!
     optional BaseEstimatedOdometry estimated_odometry = 13;
@@ -121,120 +121,58 @@ message XyzSpeed {
     float speed_z = 3;
 }
 
+// Might add friction resistance in the future.
+message SimpleBaseMoveZeroResistanceCommand {}
+
 message SimpleBaseMoveCommand {
+    reserved 2;
     oneof command{
         XyzSpeed xyz_speed = 1;
-        bool zero_resistance = 2;
+        SimpleBaseMoveZeroResistanceCommand zero_resistance = 4;
         bool brake = 3;
     }
 }
 
 message BaseCommand {
+    reserved 1, 2, 4;
     // The session holder can send all commands.
     // Non-session holders can only send clear_parking_stop command.
     oneof command{
-        // Only after api_control_initialize is set, can the vehicle be controlled by the API.
-        bool api_control_initialize = 1;
-        // If currently has a clearable parking stop, the parking stop state will be cleared.
-        // This is the ONLY command that can be sent by non-session holders.
-        bool clear_parking_stop = 2;
-        // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
+        // You have to continuesly send this command if you want to use api control.
         // Note only force controlled base types support this.
-        // MotorTargets and SimpleBaseMoveCommand are mutually exclusive. Once you send one of them, the other will be ignored until deinitialize.
+        // MotorTargets and SimpleBaseMoveCommand are mutually exclusive. Once you send one of them, the other will be ignored until it steps back to Standby mode.
         MotorTargets motor_targets = 3;
         SimpleBaseMoveCommand simple_move_command = 5;
     }
 }
 
-//////// Lift //////////
-
-enum LiftState {
-    LsBrake = 0;
-    LsCalibrating = 1;
-    LsAlgrithmControl = 2;
-    LsOvertakeControl = 3;
-    LsEmergencyStop = 4;
-}
-
-message RotateLiftStatus {
+message LiftStatus {
+    reserved 2, 4, 5;
     bool calibrated = 1;
-    LiftState state = 2;
     repeated MotorStatus motor_status = 3;
-    // field 4,5 will soon be removed. Users should read limitations from URDF.
-    repeated int32 max_pos = 4;
-    repeated int32 min_pos = 5;
-    // 0 means no session holder.
-    uint32 session_holder = 6;
-    optional ParkingStopDetail parking_stop_detail = 10;
 }
 
-message RotateLiftRuntimeConfig {
+message LiftRuntimeConfig {
     // Set max speed for position control. Must not be negative.
     repeated double pos_mode_max_speed = 1;
 }
 
 // Must keep sending. If not, will apply brake after timeout. (Will not cause Parking Stop)
-message RotateLiftCommand {
+message LiftCommand {
     oneof command{
+        // Only need to send once. If the lift can be calibrated, it will enter OrCalibrating.
         bool calibrate = 1;
+        // Expect that most lift only support position and velocity control.
         MotorTargets motor_targets = 2;
-        RotateLiftRuntimeConfig runtime_config = 3;
-    }
-}
-
-// Read motor_status of APIUp to get current position
-message LinearLiftStatus {
-    bool calibrated = 1;
-    LiftState state = 2;
-    // The max position you can set using software.
-    int64 max_pos = 3;
-    int64 current_pos = 4;
-    // Number of pulses per rotation, output asix
-    // Number of pulses per meter, for linear motor
-    uint32 pulse_per_rotation = 5;
-    // Pulses per second. ReadOnly, defines the max speed of the lift.
-    uint32 max_speed = 6;
-    // Pulses per second
-    uint32 speed = 7;
-    optional ParkingStopDetail parking_stop_detail = 10;
-    optional bool custom_button_pressed = 11;
-}
-
-message LinearLiftCommand {
-    oneof command{
-        // No matter calibrate is true or false, will always start calibration when oneof selects this.
-        // Unlike base you have the clear parking stop option (E.g. If triggered by limit switch, the exact moment you clear it, it get triggered again)
-        // Therefore to clear clearable parking stop, send calibrate command directly.
-        // DO NOT frequently send calibrate command.
-        bool calibrate = 1;
-        // Encoder position.
-        // You can calculate this from meters by multiplying with pulse_per_rotation.
-        // Value you send will be clamped to [0, max_pos].
-        // Unlike base, you don't have to keep sending target_pos, though it is recommended to do so.
-        int64 target_pos = 2;
-        // No matter brake is true or false, brake will be applied when oneof selects this.
-        // Once recieved, will apply brake immediately and get into LsBrake mode.
-        // You can exit LsBrake mode by sending target_pos command or calibrate command.
-        // You don't have to keep sending brake command, though it is recommended to do so.
-        bool brake = 3;
-        // Set speed.
-        uint32 set_speed = 4;
+        LiftRuntimeConfig runtime_config = 3;
     }
 }
 
 //////// Arm //////////
 
 message ArmStatus {
-    // Weather the API control is initialized.
-    bool api_control_initialized = 1;
-    reserved 2;
-    bool calibrated = 3;
-    repeated MotorStatus motor_status = 4;
-    uint32 session_holder = 6;
-
-    // Arm is special. Api timeout will not be treated as fatal error, it will just send a log and disable it self, releasing the session id.
-    // Switching to mode the user sets as default disabled mode. (AmBrake, AmFreeDrag, AmZeroCurrent)
-    optional ParkingStopDetail parking_stop_detail = 5;
+    reserved 1 to 6;
+    repeated MotorStatus motor_status = 7;
 }
 
 message HandStatus {
@@ -278,8 +216,18 @@ message ArmApiEndEffectorCommand {
     optional AccelerationSource acceleration_source = 2;
 }
 
-message ArmApiControlCommand {
-    reserved 6;
+message ArmApiCompensatedMitMotorTargets {
+    // Both must not be none.
+    repeated MitMotorTarget mit_target = 1;
+    AccelerationSource acceleration_source = 2;
+}
+
+message ArmApiJointPositionCommand {
+    // Joint positions in rad.
+    repeated double joint_positions = 1;
+}
+
+message ArmCommand {
     oneof command {
         // Lowest API. Gives you direct control over motors.
         MotorTargets motor_targets = 1;
@@ -296,44 +244,6 @@ message ArmApiControlCommand {
         ArmApiJointPositionCommand arm_api_joint_position_command = 5;
         // MIT control mode, but with additional force compensation.
         ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
-    }
-}
-
-message ArmApiCompensatedMitMotorTargets {
-    // Both must not be none.
-    repeated MitMotorTarget mit_target = 1;
-    AccelerationSource acceleration_source = 2;
-}
-
-message ArmApiJointPositionCommand {
-    // Joint positions in rad.
-    repeated double joint_positions = 1;
-}
-
-message ArmSharedCommand {
-    oneof command{
-        bool clear_parking_stop = 1;
-        ParkingStopDetail enter_parking_stop = 2;
-    }
-}
-
-message ArmExclusiveCommand {
-    reserved 2, 3, 5;
-    oneof exclusive_command {
-        // Only after api_control_initialize is set, can the vehicle be controlled by the API.
-        bool api_control_initialize = 1;
-        // You have to continuesly send this command if you want to use api control.
-        ArmApiControlCommand arm_api_control_command = 6;
-        // Just in case
-        bool calibrate = 4;
-    }
-}
-
-message ArmCommand {
-    oneof command{
-        // Only the session holder can send this command. Ohterwise will be ignored.
-        ArmExclusiveCommand arm_exclusive_command = 1; 
-        ArmSharedCommand arm_shared_command = 2;
     }
 }
 
@@ -377,16 +287,12 @@ enum ReportFrequency {
 }
 
 message EnableKcp {
-    // KCP message must come from the same IP and port specified here.
-    // Peer message not from this will be ignored.
-    // Can not use 0.
-    uint32 client_peer_port = 1;
+    reserved 1;
     KcpConfig kcp_config = 2;
 }
 
 message KcpServerStatus {
-    // For now server_port will change with different connections.
-    // This might be changed in the future, to use a fixed port for all KCP connections.
+    // Same IP might have multiple Robot's running. Each robot will have different websocket and KCP ports
     uint32 server_port = 1;
     KcpConfig kcp_config = 2;
 }
@@ -411,7 +317,6 @@ message KcpConfig {
     int32 resend = 6;
 }
 
-
 message ImuAcceleration {
     float ax = 1; // m/s^2
     float ay = 2; // m/s^2
@@ -435,41 +340,6 @@ message ImuData {
     ImuAcceleration acceleration = 1;
     ImuAngularVelocity angular_velocity = 2;
     ImuQuaternion quaternion = 3;
-}
-
-
-// Deliberately named to ParkingStop instead of EmergencyStop, to indicate that it is NOT emergency stop. Do not use this for safety related operations.
-// 故意命名为 ParkingStop 而不是 EmergencyStop，以表明它不是紧急停止。不要用于安全相关操作。
-enum ParkingStopCategory {
-    PscEmergencyStopButton = 0;
-    PscMotorHasError = 1;
-    PscBatteryProtection = 2;
-    PscGamepadTriggered = 3;
-    PscUnknownParkingStopCategory = 4;
-    PscAPICommunicationTimeout = 5;
-    PscLimitSwitchTriggered = 6;
-    PscBmsTimeout = 7;
-}
-
-// Parking stop detail.
-// 停车停止详细信息。
-message ParkingStopDetail {
-    // For human reading. Do not use this for programmatic operations.
-    // 仅供人类阅读。不要用于编程操作。
-    string reason = 1;
-    // Parking stop category. This can be used for programmatic operations.
-    // 停车停止类别。可用于编程操作。
-    ParkingStopCategory category = 2;
-    // If this parking stop can be cleared remotely. Some errors can be recovered remotely (e.g. API Communication Timeout). 
-    // Some are not, and can only be cleared by when errors are gone, e.g. Battery Protection.
-    // 表明这个停车停止可以远程清除。有些错误可以远程清除（例如 API 通信超时）。有些错误不能远程清除，只能当错误消失时清除，例如电池保护。
-    bool is_remotely_clearable = 3;
-}
-
-// Warning category.
-enum WarningCategory {
-    WcUnknownWarningCategory = 0;
-    WcBatteryLow = 1;
 }
 
 //////// Motor //////////
@@ -514,6 +384,7 @@ enum MotorError{
     MeGeneralError = 6;
 }
 
+// Current target is removed from MotorStatus. It will be clearer to put it outside motor
 message MotorStatus {
     // Nm
     double torque = 2; 
@@ -526,13 +397,9 @@ message MotorStatus {
     // Number of pulses per rotation, output asix
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
-    // If given 0.0 or negative, means wheel_radius is not known or applicable.
-    double wheel_radius = 6;
 
     repeated MotorError error = 7;
     optional string motor_warning = 14;
-    SingleMotorTarget current_target = 8;
-
     optional float driver_temperature = 11;
     optional float motor_temperature = 12;
     // Current supplied voltage

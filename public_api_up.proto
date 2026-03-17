@@ -12,7 +12,7 @@ message APIUp {
     RobotType robot_type = 1;
     // Rolls with potential breaking changes. e.g. Refactoring the message structure, removing deprecated robot types, etc.
     // 变更意味着 breaking change。
-    uint32 protocol_major_version = 17; // Current value is 1.
+    uint32 protocol_major_version = 17;
     // Rolls with potential non-breaking changes. e.g. adding new robot types.
     uint32 protocol_minor_version = 18;
     // Status of main device.
@@ -21,12 +21,9 @@ message APIUp {
         // Base robots will use this field.
         // 底盘机器人会使用这个字段。
         BaseStatus base_status = 2;
-        // Linear lifts will use this field.
-        // 线性升降机会使用这个字段。
-        LinearLiftStatus linear_lift_status = 3;
-        // Rotational lifts will use this field.
-        // 旋转升降机会使用这个字段。
-        RotateLiftStatus rotate_lift_status = 5;
+        // Lifts will use this field.
+        // 升降机会使用这个字段。
+        LiftStatus lift_status = 26;
         // Arms will use this field.
         // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
@@ -48,12 +45,21 @@ message APIUp {
     // 可选的日志消息。除非您对日志感兴趣，否则可以忽略这个字段不解析。
     optional string log = 14;
 
-    // Current report frequency. This field is connection independent. A single robot might have multiple websocket connections. Each connection might have a different report frequency.
-    // 当前的报告频率。这个字段与连接无关。一个机器人可能有多个 websocket 连接。每个连接可能有不同的报告频率。
+    // Current report frequency. This field is connection independent. A single robot might have multiple websocket connections. Each connection might have a different report frequency. Twin KCP and websocket connection can have different report frequency.
+    // 当前的报告频率。这个字段与连接无关。一个机器人可能有多个 websocket 连接。每个连接可能有不同的报告频率。从 Websocket 派生出的 KCP 连接的报告频率与 Websocket 的报告频率独立管理。
     ReportFrequency report_frequency = 12;
-    // Identifies different websocket connections. Value will not be zero.
-    // 识别不同的 websocket 连接。值不会为零。
+    // Identifies different connections. Value will not be zero. Same for the twin KCP and websocket connection.
+    // 识别不同的连接。值不会为零。从 Websocket 派生出的 KCP 连接的 session id 与 Websocket 的 session id 相同。
     uint32 session_id = 15;
+    // Current robot mode.
+    // 当前机器人模式。
+    RobotMode robot_mode = 23;
+    // Current overtaken reason. Only present when robot_mode is RmOvertaken.
+    // 当前被接管原因。仅当机器人模式为 RmOvertaken 时出现。
+    optional OvertakenReason overtaken_reason = 24;
+    // Current session holder. 0 stands for no session holder.
+    // 当前控制权持有者。0 表示没有控制权持有者。
+    uint32 session_holder = 25;
 
     // If KCP connection is enabled, this field will be present.
     // This field will not change after connection is established.
@@ -68,5 +74,5 @@ message APIUp {
 
     // Deprecated fields.
     // 弃用的字段。
-    reserved 10,11,13;
+    reserved 10,11,13,3,5;
 }
