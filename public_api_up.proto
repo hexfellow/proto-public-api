@@ -21,11 +21,8 @@ message APIUp {
         // Base robots will use this field.
         // 底盘机器人会使用这个字段。
         BaseStatus base_status = 2;
-        // Lifts will use this field.
-        // 升降机会使用这个字段。
-        LiftStatus lift_status = 26;
-        // Arms will use this field.
-        // 机械臂会使用这个字段。
+        // Arms/Lifts will use this field.
+        // 机械臂/升降机 会使用这个字段。
         ArmStatus arm_status = 4;
         // Only available for RtPureForwardOnlyV2 robot type.
         // Will forward all CAN frames to the client.
@@ -74,5 +71,5 @@ message APIUp {
 
     // Deprecated fields.
     // 弃用的字段。
-    reserved 10,11,13,3,5;
+    reserved 10,11,13,3,5,26;
 }

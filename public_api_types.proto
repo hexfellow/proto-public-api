@@ -49,12 +49,6 @@ enum RobotType {
     RtArk2Lr1 = 5;
     RtMaverX3H1 = 23;
 
-    ////// Linear Lifts //////
-    // Linear Lifts can only be controlled by position with max speed.
-    RtTheta1 = 24;
-    RtZetaVc2 = 19;
-    RtIotaVc2 = 22;
-
     ////// Arm //////
     // Current MainStream Products
     RtArmArcherY6_H1 = 25;
@@ -62,6 +56,11 @@ enum RobotType {
     RtArmFireflyY6_H1 = 27;
     RtHelloFireflyY6_H1 = 28;
     RtArmEmpty = 36;
+     ////// Lifts //////
+    // Lifts are considered as arms, and can only be controlled by position with max speed.
+    RtTheta1 = 24;
+    RtZetaVc2 = 19;
+    RtIotaVc2 = 22;
     
     ////// Special modes //////
     // Forward CAN bus just using messages defined here.
@@ -146,32 +145,11 @@ message BaseCommand {
     }
 }
 
-message LiftStatus {
-    reserved 2, 4, 5;
-    bool calibrated = 1;
-    repeated MotorStatus motor_status = 3;
-}
-
-message LiftRuntimeConfig {
-    // Set max speed for position control. Must not be negative.
-    repeated double pos_mode_max_speed = 1;
-}
-
-// Must keep sending. If not, will apply brake after timeout. (Will not cause Parking Stop)
-message LiftCommand {
-    oneof command{
-        // Only need to send once. If the lift can be calibrated, it will enter OrCalibrating.
-        bool calibrate = 1;
-        // Expect that most lift only support position and velocity control.
-        MotorTargets motor_targets = 2;
-        LiftRuntimeConfig runtime_config = 3;
-    }
-}
-
-//////// Arm //////////
+//////// Arm/Lift //////////
 
 message ArmStatus {
     reserved 1 to 6;
+    bool calibrated = 8;
     repeated MotorStatus motor_status = 7;
 }
 
@@ -227,6 +205,8 @@ message ArmApiJointPositionCommand {
     repeated double joint_positions = 1;
 }
 
+message ArmCalibrateCommand {}
+
 message ArmCommand {
     oneof command {
         // Lowest API. Gives you direct control over motors.
@@ -244,6 +224,7 @@ message ArmCommand {
         ArmApiJointPositionCommand arm_api_joint_position_command = 5;
         // MIT control mode, but with additional force compensation.
         ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
+        ArmCalibrateCommand arm_calibrate_command = 8;
     }
 }
 
