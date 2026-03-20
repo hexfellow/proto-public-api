@@ -268,7 +268,7 @@ enum ReportFrequency {
 }
 
 message EnableKcp {
-    reserved 1;
+    uint32 client_peer_port = 1;
     KcpConfig kcp_config = 2;
 }
 
