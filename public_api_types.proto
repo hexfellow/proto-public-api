@@ -40,6 +40,7 @@ enum RobotType {
     RtHelloArcherY6_H1 = 26;
     RtArmFireflyY6_H1 = 27;
     RtHelloFireflyY6_H1 = 28;
+    RtArmArcherX7h1 = 29;
     
     ////// Special modes //////
     // Forward CAN bus just using messages defined here.
