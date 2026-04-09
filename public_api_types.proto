@@ -483,7 +483,13 @@ message SingleMotorTarget{
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
         FollowMotorTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
+        SpeedWithMaxCurrent speed_with_max_current = 8; // Not all motors support this. 
     }
+}
+
+message SpeedWithMaxCurrent {
+    double speed = 1;   // rad/s
+    double max_current = 2;   // A
 }
 
 message FollowMotorTarget {
