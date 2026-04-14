@@ -458,6 +458,7 @@ enum ParkingStopCategory {
     PscAPICommunicationTimeout = 5;
     PscLimitSwitchTriggered = 6;
     PscBmsTimeout = 7;
+    PscBoardcastedEmergencyStop = 8;
 }
 
 // Parking stop detail.
@@ -687,4 +688,48 @@ message HexCanApiCanId {
         uint32 standard_id = 1;
         uint32 extended_id = 2;
     }
+}
+
+// ---------------------
+//////// Boardcast Used Types //////////
+// ---------------------
+
+// These types are used to coordinate different robots in the same network, with the same group.
+// No plan to control frequency of boardcast messages. Lets let each hardware to decide. 
+// A frequency of at least 50Hz is expected. Frequency 100Hz is generally recommended.
+
+message MacAddress {
+    bytes address = 1;
+}
+
+message BmHardwareMessage {
+    // Due to nature of boardcast and multi robot coodination, upon recieving this, the robot should 
+    // enter emergency stop mode with remotely clearable parking stop detail.
+    // So, even when emergency stop is released on target machine / target machine is powered off, other robots can remain in stopped state.
+    // Note for this to work, you first need to set robots to same boardcast group.
+    // Any controller can trigger this
+    bool emergency_stop = 1;
+    // The gamepad readings should be considered valid for 50ms. 
+    // If not recieving next one in 50ms, it will behave as if gamepad is disconnected.
+    // When multiple controllers are trying to send this, the lowest controller_id will take affect.
+    optional GamepadRead gamepad_read = 2;
+}
+
+// For possible future expansion.
+// message BmRobotMessage {
+//     RobotType robot_type = 1;
+// }
+
+message BoardcastMessage {
+    // Multicast is forbidden. Only use broadcast to avoid network switch affecting behavior.
+    uint32 group_id = 1;
+    // MUST BE UNIQUE across the whole group.
+    // Can NOT be 0. 0 will be ignored.
+    uint32 controller_id = 2;
+    // Used to makesure to tell different hardware apart.
+    MacAddress mac_address = 3;
+    BmHardwareMessage hardware_message = 4;
+    // Reserved for future expansion.
+    // repeated BmRobotMessage robot_messages = 5;
+    reserved 5;
 }
