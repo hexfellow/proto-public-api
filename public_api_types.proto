@@ -26,7 +26,7 @@ enum RobotType {
     // Linear Lifts can only be controlled by position with max speed.
     RtIotaP1 = 8;
     RtIotaVc1 = 18;
-    RtTheta1 = 24;
+    RtTheta2 = 32;
 
     ////// Rotational Lifts //////
     RtZetaVc2 = 19;
@@ -55,6 +55,7 @@ enum RobotType {
     RtZetaVc1 = 13;
     RtArmSaberD6x = 14;
     RtArmSaberD7x = 15;
+    RtTheta1 = 24;
     // Working purely as a can bus forwarder.
     RtPureForwardOnly = 100;
 
