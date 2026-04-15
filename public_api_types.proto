@@ -55,10 +55,11 @@ enum RobotType {
     RtHelloArcherY6_H1 = 26;
     RtArmFireflyY6_H1 = 27;
     RtHelloFireflyY6_H1 = 28;
+    RtArmArcherX7h1 = 29;
     RtArmEmpty = 36;
-     ////// Lifts //////
+    ////// Lifts //////
     // Lifts are considered as arms, and can only be controlled by position with max speed.
-    RtTheta1 = 24;
+    RtTheta2 = 32;
     RtZetaVc2 = 19;
     RtIotaVc2 = 22;
     
@@ -71,7 +72,7 @@ enum RobotType {
     RtPureForwardOnlyV2 = 101;
 
     ////// Deprecated //////
-    reserved 2, 4, 6 to 18, 20, 21, 100;
+    reserved 2, 4, 6 to 18, 20, 21, 24, 100;
 }
 
 enum SecondaryDeviceType {
