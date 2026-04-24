@@ -49,7 +49,7 @@ enum RobotType {
     // Also, please make sure only one connection is using this robot type. (KCP + Websocket pair is counted as one connection)
     // If you use multiple connections, you will loss can messages from the robot.
     RtPureForwardOnlyV2 = 101;
-    // todo might adding cannelloni, if it out performs KCP in performance.
+    // todo: might add cannelloni if it outperforms KCP.
 
     ////// About to move on //////
     RtZetaVc1 = 13;
@@ -83,7 +83,7 @@ enum SecondaryDeviceType {
 // Base State
 enum BaseState {
     BsParked = 0;
-    BsAlgrithmControl = 1;
+    BsAlgorithmControl = 1;
     BsOvertakeSpeedControl = 2;
     BsOvertakeZeroResistanceControl = 3;
     BsEmergencyStop = 4;
@@ -101,14 +101,14 @@ message BaseEstimatedOdometry {
 message BaseStatus {
     BaseState state = 1;
 
-    // Weather the API control is initialized.
+    // Whether the API control is initialized.
     bool api_control_initialized = 2;
     float battery_voltage = 3;                  // V
     uint32 battery_thousandth = 4;              // 1/1000
     repeated MotorStatus motor_status = 5;
     uint32 session_holder = 6;                  // 0 means no session holder
 
-    // Only avalible on vehicles that have BMS.
+    // Only available on vehicles that have BMS.
     optional bool battery_charging = 10;
     optional float battery_current = 14;
     optional ParkingStopDetail parking_stop_detail = 11;
@@ -140,7 +140,7 @@ message BaseCommand {
         // If currently has a clearable parking stop, the parking stop state will be cleared.
         // This is the ONLY command that can be sent by non-session holders.
         bool clear_parking_stop = 2;
-        // You have to continuesly send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
+        // You have to continuously send this command if you want to use api control. (Start sending these commands and keep sending it first, then send api_control_initialize)
         // Note only force controlled base types support this.
         // MotorTargets and SimpleBaseMoveCommand are mutually exclusive. Once you send one of them, the other will be ignored until deinitialize.
         MotorTargets motor_targets = 3;
@@ -153,7 +153,7 @@ message BaseCommand {
 enum LiftState {
     LsBrake = 0;
     LsCalibrating = 1;
-    LsAlgrithmControl = 2;
+    LsAlgorithmControl = 2;
     LsOvertakeControl = 3;
     LsEmergencyStop = 4;
 }
@@ -191,7 +191,7 @@ message LinearLiftStatus {
     // The max position you can set using software.
     int64 max_pos = 3;
     int64 current_pos = 4;
-    // Number of pulses per rotation, output asix
+    // Number of pulses per rotation, output axis
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
     // Pulses per second. ReadOnly, defines the max speed of the lift.
@@ -215,7 +215,7 @@ message LinearLiftCommand {
         // Unlike base, you don't have to keep sending target_pos, though it is recommended to do so.
         int64 target_pos = 2;
         // No matter brake is true or false, brake will be applied when oneof selects this.
-        // Once recieved, will apply brake immediately and get into LsBrake mode.
+        // Once received, will apply brake immediately and get into LsBrake mode.
         // You can exit LsBrake mode by sending target_pos command or calibrate command.
         // You don't have to keep sending brake command, though it is recommended to do so.
         bool brake = 3;
@@ -227,15 +227,15 @@ message LinearLiftCommand {
 //////// Arm //////////
 
 message ArmStatus {
-    // Weather the API control is initialized.
+    // Whether the API control is initialized.
     bool api_control_initialized = 1;
     reserved 2;
     bool calibrated = 3;
     repeated MotorStatus motor_status = 4;
     uint32 session_holder = 6;
 
-    // Arm is special. Api timeout will not be treated as fatal error, it will just send a log and disable it self, releasing the session id.
-    // Switching to mode the user sets as default disabled mode. (AmBrake, AmFreeDrag, AmZeroCurrent)
+    // Arm is special. Api timeout will not be treated as fatal error, it will just send a log and disable itself, releasing the session id.
+    // Switching to mode the user sets as default disabled mode. (AsmBrake, AsmFreeDrag, AsmZeroCurrent)
     optional ParkingStopDetail parking_stop_detail = 5;
 }
 
@@ -332,7 +332,7 @@ message ArmExclusiveCommand {
     oneof exclusive_command {
         // Only after api_control_initialize is set, can the vehicle be controlled by the API.
         bool api_control_initialize = 1;
-        // You have to continuesly send this command if you want to use api control.
+        // You have to continuously send this command if you want to use api control.
         ArmApiControlCommand arm_api_control_command = 6;
         // Just in case
         bool calibrate = 4;
@@ -341,7 +341,7 @@ message ArmExclusiveCommand {
 
 message ArmCommand {
     oneof command{
-        // Only the session holder can send this command. Ohterwise will be ignored.
+        // Only the session holder can send this command. Otherwise will be ignored.
         ArmExclusiveCommand arm_exclusive_command = 1; 
         ArmSharedCommand arm_shared_command = 2;
     }
@@ -459,7 +459,7 @@ enum ParkingStopCategory {
     PscAPICommunicationTimeout = 5;
     PscLimitSwitchTriggered = 6;
     PscBmsTimeout = 7;
-    PscBoardcastedEmergencyStop = 8;
+    PscBroadcastedEmergencyStop = 8;
 }
 
 // Parking stop detail.
@@ -542,13 +542,13 @@ enum MotorError{
 message MotorStatus {
     // Nm
     double torque = 2; 
-    // In general positivive is counter-clockwise(Right hand). But view angle is defined differently for different robot types.
+    // In general positive is counter-clockwise(Right hand). But view angle is defined differently for different robot types.
     // View XSTD guide for detailed definition of positive direction.
     // m/s, direction is not defined, for linear motor
     double speed = 3;
     // encoder position
     int64 position = 4;
-    // Number of pulses per rotation, output asix
+    // Number of pulses per rotation, output axis
     // Number of pulses per meter, for linear motor
     uint32 pulse_per_rotation = 5;
     // If given 0.0 or negative, means wheel_radius is not known or applicable.
@@ -564,7 +564,7 @@ message MotorStatus {
     optional float voltage = 13;
 }
 
-// Hello actully stands for HexGello :)
+// Hello actually stands for HexGello :)
 // HexGelloSingleJoystickSingleTrigger4BtnControllerStatus
 message Hello1J1T4BStatus {
     // -1.0 to 1.0
@@ -692,11 +692,11 @@ message HexCanApiCanId {
 }
 
 // ---------------------
-//////// Boardcast Used Types //////////
+//////// Broadcast Used Types //////////
 // ---------------------
 
 // These types are used to coordinate different robots in the same network, with the same group.
-// No plan to control frequency of boardcast messages. Lets let each hardware to decide. 
+// No plan to control frequency of broadcast messages. Let's let each hardware decide. 
 // A frequency of at least 50Hz is expected. Frequency 100Hz is generally recommended.
 
 message MacAddress {
@@ -704,15 +704,15 @@ message MacAddress {
 }
 
 message BmHardwareMessage {
-    // Due to nature of boardcast and multi robot coodination, upon recieving this, the robot should 
+    // Due to nature of broadcast and multi-robot coordination, upon receiving this, the robot should 
     // enter emergency stop mode with remotely clearable parking stop detail.
     // So, even when emergency stop is released on target machine / target machine is powered off, other robots can remain in stopped state.
-    // Note for this to work, you first need to set robots to same boardcast group.
+    // Note for this to work, you first need to set robots to same broadcast group.
     // Any controller can trigger this
     bool emergency_stop = 1;
     // The gamepad readings should be considered valid for 50ms. 
-    // If not recieving next one in 50ms, it will behave as if gamepad is disconnected.
-    // When multiple controllers are trying to send this, the lowest controller_id will take affect.
+    // If not receiving next one in 50ms, it will behave as if gamepad is disconnected.
+    // When multiple controllers are trying to send this, the lowest controller_id will take effect.
     optional GamepadRead gamepad_read = 2;
 }
 
@@ -721,13 +721,13 @@ message BmHardwareMessage {
 //     RobotType robot_type = 1;
 // }
 
-message BoardcastMessage {
+message BroadcastMessage {
     // Multicast is forbidden. Only use broadcast to avoid network switch affecting behavior.
     uint32 group_id = 1;
     // MUST BE UNIQUE across the whole group.
     // Can NOT be 0. 0 will be ignored.
     uint32 controller_id = 2;
-    // Used to makesure to tell different hardware apart.
+    // Used to make sure to tell different hardware apart.
     MacAddress mac_address = 3;
     BmHardwareMessage hardware_message = 4;
     // Reserved for future expansion.
