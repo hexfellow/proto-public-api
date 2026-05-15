@@ -35,6 +35,8 @@ message APIDown {
         // After sending this, and you find kcp_config in APIUp, you can start to send data to the robot using KCP.
         // The server will NOT send data before it receives the first message from the client, using KCP.
         EnableKcp enable_kcp = 8;
+        // Request the robot to reboot.
+        RebootRequest reboot_request = 13;
         // This is a placeholder message. This message will be ignored by the server, but server still considers getting stuff from client.
         // Can be used to start KCP connection, since server will not start sending until it receives the first message from the client, using KCP.
         bool placeholder_message = 100;

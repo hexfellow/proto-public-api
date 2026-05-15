@@ -30,8 +30,6 @@ message APIUp {
         // Arms will use this field.
         // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
-        // Request the robot to reboot.
-        RebootRequest reboot_request = 23;
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
     // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。
