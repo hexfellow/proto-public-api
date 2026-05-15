@@ -30,12 +30,8 @@ message APIUp {
         // Arms will use this field.
         // 机械臂会使用这个字段。
         ArmStatus arm_status = 4;
-        // Only available for RtPureForwardOnlyV2 robot type.
-        // Will forward all CAN frames to the client.
-        // Underlying hardware will only report at max frequency 1000Hz. So all frames in 1ms will be packed into one message.
-        // KCP is mandatory for this. Websocket can only send can messages, but will never get can messages from the robot.
-        // Also, please make sure only one connection is using this robot type. (KCP + Websocket pair is counted as one connection)
-        HexCanApiCanAnyFrames hex_can_api_can_any_frames = 22;
+        // Request the robot to reboot.
+        RebootRequest reboot_request = 23;
     }
     // Secondary device status. Optional. Including Imu, Hand, Gamepad, etc.
     // 次级设备状态。可选。包括 Imu, Hand, Gamepad 等。
@@ -68,5 +64,5 @@ message APIUp {
 
     // Deprecated fields.
     // 弃用的字段。
-    reserved 10,11,13;
+    reserved 10,11,13,22;
 }

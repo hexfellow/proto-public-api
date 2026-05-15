@@ -23,3 +23,7 @@
 - Change FollowMotorTarget's position unit to rad (reserved old encoder field 3).
 - Change ArmApiJointPositionCommand: replaced repeated double joint_positions (field 1, reserved) with repeated PosVelAccTarget joint_targets (field 2).
 - Added BoardcastMessage, BmHardwareMessage, BmRobotMessage.
+
+## 1.6
+- Added RebootRequest message.
+- Removed can forwarding related stuff.
