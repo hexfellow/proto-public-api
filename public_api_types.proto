@@ -90,6 +90,25 @@ enum SecondaryDeviceType {
     SdtHandGr100 = 6;
 }
 
+//////// Robot Common Command //////////
+
+enum RebootMode {
+    // Only reboot the base backend. No power cut/loss. Does not guarantee to fix all problems.
+    RmAppOnly = 0;
+    // Reboot everything, including linux. On most controllers this means a total power loss. 
+    RmLinux = 1;
+    // Reboot the base backend with a ensured power cut to motors, but not output. This keeps your computer running.
+    RmAppWithMotorPowerCut = 2;
+}
+
+message RebootRequest {
+    // The magic number has to be 0x0065686e6f73696b
+    uint64 reboot_magic_number = 1;
+    // The type of reboot.
+    RebootMode reboot_mode = 2;
+}
+
+
 //////// Base //////////
 
 message BaseEstimatedOdometry {
@@ -468,51 +487,6 @@ message PtpTimeStamp {
 message TimeStamp {
     MonotonicTimeStamp monotonic_time_stamp = 1;
     PtpTimeStamp ptp_time_stamp = 2;
-}
-
-/// ---------------------
-//////// CAN Forwarding API V2 //////////
-// Invalid frames will be dropped with a log.
-/// ---------------------
-
-enum HexCanApiCanBusNumber {
-    HcanInvalid = 0;
-    Hcan0 = 1;
-    Hcan1 = 2;
-    Hcan2 = 3;
-}
-
-message HexCanApiCanAnyFrames {
-    repeated HexCanApiCanAnyFrame frames = 1;
-}
-
-message HexCanApiCanAnyFrame {
-    HexCanApiCanBusNumber bus_number = 1;
-    oneof frame {
-        HexCanApiCanDataFrame can_data_frame = 2;
-        HexCanApiCanFdFrame can_fd_frame = 3;
-        // todo add remote and error later
-    }
-}
-
-message HexCanApiCanDataFrame {
-    HexCanApiCanId id = 1;
-    bytes data = 2;
-}
-
-message HexCanApiCanFdFrame {
-    HexCanApiCanId id = 1;
-    bytes data = 2;
-    // Well there are three flags, CANFD_BRS, CANFD_ESI, CANFD_FDF. Only brs is meaningful for now.
-    // For more info, check uapi/linux/can.h
-    bool brs = 4;
-}
-
-message HexCanApiCanId {
-    oneof id {
-        uint32 standard_id = 1;
-        uint32 extended_id = 2;
-    }
 }
 
 // ---------------------

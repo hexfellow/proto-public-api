@@ -44,9 +44,8 @@ message APIDown {
         // After sending this, and you find kcp_config in APIUp, you can start to send data to the robot using KCP.
         // The server will NOT send data before it receives the first message from the client, using KCP.
         EnableKcp enable_kcp = 8;
-        // Only available for RtPureForwardOnlyV2 robot type.
-        // Sending arbitrary CAN frames to the robot's CAN bus. Other robots will ignore this message.
-        HexCanApiCanAnyFrame hex_can_api_can_any_frame = 9;
+        // Request the robot to reboot.
+        RebootRequest reboot_request = 13;
         // Try to exit overtaken mode. Does not work if not possible to exit.
         TryExitOvertake try_exit_overtake = 14;
         // This is a placeholder message. This message will be ignored by the server, but server still considers getting stuff from client.
@@ -59,5 +58,5 @@ message APIDown {
     uint32 protocol_minor_version = 12;
     // Deprecated fields.
     // 弃用的字段。
-    reserved 2, 4, 6, 10, 13;
+    reserved 2, 4, 6, 10;
 }
