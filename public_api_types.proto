@@ -221,11 +221,15 @@ message ArmApiCompensatedMitMotorTargets {
 }
 
 message ArmApiJointPositionCommand {
-    // Joint positions in rad.
-    repeated double joint_positions = 1;
+    reserved 1;
+    // Per-joint targets (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
+    repeated PosVelAccTarget joint_targets = 2;
 }
 
-message ArmCalibrateCommand {}
+message ArmApiCompensatedJointPositionCommand {
+    ArmApiJointPositionCommand joint_position_command = 1;
+    AccelerationSource acceleration_source = 2;
+}
 
 message ArmCommand {
     oneof command {
@@ -244,7 +248,8 @@ message ArmCommand {
         ArmApiJointPositionCommand arm_api_joint_position_command = 5;
         // MIT control mode, but with additional force compensation.
         ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
-        ArmCalibrateCommand arm_calibrate_command = 8;
+        // ArmApiJointPositionCommand but with additional force compensation.
+        ArmApiCompensatedJointPositionCommand arm_api_compensated_joint_position_command = 8;
     }
 }
 
@@ -353,15 +358,27 @@ message SingleMotorTarget{
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
         FollowMotorTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
+        SpeedWithMaxCurrent speed_with_max_current = 8; // Not all motors support this. Speed command but with max current limit.
+        PosVelAccTarget pos_with_trapezoidal_velocity = 9; // Not all motors support this. A position mode based on trapezoidal speed planning.
     }
 }
 
-message FollowMotorTarget {
-    double speed = 2;   // rad/s
-    int64 position = 3; // encoder position
+message PosVelAccTarget {
+    double position = 1;     // rad
+    double velocity = 2;     // rad/s
+    double acceleration = 3; // rad/s²
 }
 
-// todo Add speed with max torque, and position with max torque and speed.
+message SpeedWithMaxCurrent {
+    double speed = 1;   // rad/s
+    double max_current = 2;   // A
+}
+
+message FollowMotorTarget {
+    reserved 3;
+    double speed = 2;   // rad/s
+    double position = 4; // rad
+}
 
 message MitMotorTarget {
     double torque = 1;   // Nm
