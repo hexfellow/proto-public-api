@@ -48,6 +48,9 @@ message APIDown {
         RebootRequest reboot_request = 13;
         // Try to exit overtaken mode. Does not work if not possible to exit.
         TryExitOvertake try_exit_overtake = 14;
+        // This command will only work when robot is in RmStandby/RmRunning mode.
+        // In other modes, this command will not work.
+        EnterStandbyMode enter_standby_mode = 15;
         // This is a placeholder message. This message will be ignored by the server, but server still considers getting stuff from client.
         // Can be used to start KCP connection, since server will not start sending until it receives the first message from the client, using KCP.
         bool placeholder_message = 100;

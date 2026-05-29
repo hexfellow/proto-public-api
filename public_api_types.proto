@@ -27,6 +27,8 @@ enum OvertakenMode {
 
 message TryExitOvertake{}
 
+message EnterStandbyMode{}
+
 message OvertakenReason {
     OvertakenMode overtaken_mode = 1;
     optional string human_readable_reason = 2;
