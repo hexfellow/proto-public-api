@@ -29,7 +29,7 @@
 - Added RobotMode and OvertakenReason.
 - Move session holder to APIUp.
 ### New messages
-- PosVelAccTarget: position / velocity / acceleration (rad, rad/s, rad/s²), all optional.
+- MotionTarget (renamed from PosVelAccTarget): position / velocity / acceleration / torque (rad|m, rad/s|m/s, rad/s²|m/s², Nm), all optional. Added torque field.
 - SpeedWithMaxCurrent: speed (rad/s) with max_current limit (A).
 - PosVelTorqueTarget: position / velocity / torque (rad, rad/s, Nm). Replaces FollowMotorTarget.
 ### SingleMotorTarget

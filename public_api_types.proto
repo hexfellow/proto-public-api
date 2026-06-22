@@ -185,10 +185,10 @@ message HandStatus {
 message HandCommand {
     oneof command {
         MotorTargets motor_targets = 1;
-        // Control torque with speed limit. Speed is in rad/s, torque is in Nm, position is deprecated.
-        PosVelAccTarget tau_with_speed_limit = 2;
-        // Control position with speed and torque limit. Speed is in rad/s, torque is in Nm, position is in rad.
-        PosVelTorqueTarget pos_with_speed_and_torque_limit = 3;
+        // Control torque with speed limit. Speed is in rad/s, torque is in Nm. position, acceleration is deprecated.
+        MotionTarget tau_with_speed_limit = 2;
+        // Control position with speed and torque limit. Speed is in rad/s, torque is in Nm, position is in rad. acceleration is deprecated.
+        MotionTarget pos_with_speed_and_torque_limit = 3;
     }
 }
 
@@ -222,8 +222,8 @@ message ArmApiEndEffectorCommand {
     Pose end_pose = 1;
     // Optional. If not provided, gravity compensation will not be applied.
     optional AccelerationSource acceleration_source = 2;
-    // Per-joint motion planning parameters (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
-    repeated PosVelAccTarget joint_motion_params = 3;
+    // Per-joint motion planning parameters (position, velocity, acceleration, extra torque) in rad / rad·s⁻¹ / rad·s⁻² / Nm.
+    repeated MotionTarget joint_motion_params = 3;
 }
 
 message ArmApiCompensatedMitMotorTargets {
@@ -234,8 +234,8 @@ message ArmApiCompensatedMitMotorTargets {
 
 message ArmApiJointPositionCommand {
     reserved 1;
-    // Per-joint motion planning parameters (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
-    repeated PosVelAccTarget joint_motion_params = 2;
+    // Per-joint motion planning parameters (position, velocity, acceleration, extra torque) in rad / rad·s⁻¹ / rad·s⁻² / Nm.
+    repeated MotionTarget joint_motion_params = 2;
     // Optional. If not provided, gravity compensation will not be applied.
     optional AccelerationSource acceleration_source = 3;
 }
@@ -366,27 +366,22 @@ message SingleMotorTarget{
         int64 position = 3; // encoder position
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
-        PosVelAccTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
+        MotionTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
         SpeedWithMaxCurrent speed_with_max_current = 8; // Not all motors support this. Speed command but with max current limit.
-        PosVelAccTarget pos_with_trapezoidal_velocity = 9; // Not all motors support this. A position mode based on trapezoidal speed planning.
+        MotionTarget pos_with_trapezoidal_velocity = 9; // Not all motors support this. A position mode based on trapezoidal speed planning.
     }
 }
 
-message PosVelAccTarget {
-    optional double position = 1;     // rad
-    optional double velocity = 2;     // rad/s
-    optional double acceleration = 3; // rad/s²
+message MotionTarget {
+    optional double position = 1;     // rad    or m
+    optional double velocity = 2;     // rad/s  or m/s
+    optional double acceleration = 3; // rad/s² or m/s²
+    optional double torque = 4; // Nm
 }
 
 message SpeedWithMaxCurrent {
     double speed = 1;   // rad/s
     double max_current = 2;   // A
-}
-
-message PosVelTorqueTarget {
-    double position = 1; // rad
-    double velocity = 2; // rad/s
-    double torque = 3;   // Nm
 }
 
 message MitMotorTarget {
