@@ -28,3 +28,27 @@
 - Removed LinearLiftStatus and RotateLiftStatus. Treat them as Arms.
 - Added RobotMode and OvertakenReason.
 - Move session holder to APIUp.
+### New messages
+- PosVelAccTarget: position / velocity / acceleration (rad, rad/s, rad/s²), all optional.
+- SpeedWithMaxCurrent: speed (rad/s) with max_current limit (A).
+- PosVelTorqueTarget: position / velocity / torque (rad, rad/s, Nm). Replaces FollowMotorTarget.
+### SingleMotorTarget
+- Added SpeedWithMaxCurrent and pos_with_trapezoidal_velocity (PosVelAccTarget).
+- Changed FollowMotorTarget follow_motor_target to PosVelAccTarget follow_motor_target.
+### ArmStatus
+- Added optional Pose end_pose. For non-standard arm types, there may be no pose information.
+### HandCommand
+- Changed to oneof, supporting three control modes:
+  - `motor_targets` (MotorTargets)
+  - `tau_with_speed_limit` (PosVelAccTarget) — torque control with speed limit
+  - `pos_with_speed_and_torque_limit` (PosVelTorqueTarget) — position control with speed and torque limits
+### ArmApiJointPositionCommand
+- Changed repeated double joint_positions (field 1, reserved) to repeated PosVelAccTarget joint_motion_params (field 2).
+- Merged ArmApiCompensatedJointPositionCommand: added optional AccelerationSource acceleration_source (field 3).
+### ArmApiEndEffectorCommand
+- Added repeated PosVelAccTarget joint_motion_params (field 3) for per-joint motion planning.
+### ArmCommand
+- Reserved field 6.
+- Removed arm_api_compensated_joint_position_command (merged into ArmApiJointPositionCommand).
+### APIDown
+- Added EnterStandbyMode. Only works when robot is in RmStandby or RmRunning mode.

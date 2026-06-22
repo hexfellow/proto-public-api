@@ -173,6 +173,8 @@ message ArmStatus {
     reserved 1 to 6;
     bool calibrated = 8;
     repeated MotorStatus motor_status = 7;
+    // Optional. For non-standard arm types, there may be no pose information.
+    optional Pose end_pose = 9;
 }
 
 message HandStatus {
@@ -181,7 +183,13 @@ message HandStatus {
 }
 
 message HandCommand {
-    MotorTargets motor_targets = 1;
+    oneof command {
+        MotorTargets motor_targets = 1;
+        // Control torque with speed limit. Speed is in rad/s, torque is in Nm, position is deprecated.
+        PosVelAccTarget tau_with_speed_limit = 2;
+        // Control position with speed and torque limit. Speed is in rad/s, torque is in Nm, position is in rad.
+        PosVelTorqueTarget pos_with_speed_and_torque_limit = 3;
+    }
 }
 
 message AccelerationSource {
@@ -214,6 +222,8 @@ message ArmApiEndEffectorCommand {
     Pose end_pose = 1;
     // Optional. If not provided, gravity compensation will not be applied.
     optional AccelerationSource acceleration_source = 2;
+    // Per-joint motion planning parameters (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
+    repeated PosVelAccTarget joint_motion_params = 3;
 }
 
 message ArmApiCompensatedMitMotorTargets {
@@ -224,16 +234,14 @@ message ArmApiCompensatedMitMotorTargets {
 
 message ArmApiJointPositionCommand {
     reserved 1;
-    // Per-joint targets (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
-    repeated PosVelAccTarget joint_targets = 2;
-}
-
-message ArmApiCompensatedJointPositionCommand {
-    ArmApiJointPositionCommand joint_position_command = 1;
-    AccelerationSource acceleration_source = 2;
+    // Per-joint motion planning parameters (position, velocity, acceleration) in rad / rad·s⁻¹ / rad·s⁻².
+    repeated PosVelAccTarget joint_motion_params = 2;
+    // Optional. If not provided, gravity compensation will not be applied.
+    optional AccelerationSource acceleration_source = 3;
 }
 
 message ArmCommand {
+    reserved 6;
     oneof command {
         // Lowest API. Gives you direct control over motors.
         MotorTargets motor_targets = 1;
@@ -247,11 +255,10 @@ message ArmCommand {
         // Please note that this mode will no longer be applicable if the robotic arm has been modified.
         ArmApiEndEffectorCommand arm_api_end_effector_command = 4;
         // A more convenient positioning mode that will plan the target position before moving.
+        // ArmApiJointPositionCommand but with additional force compensation.
         ArmApiJointPositionCommand arm_api_joint_position_command = 5;
         // MIT control mode, but with additional force compensation.
         ArmApiCompensatedMitMotorTargets arm_api_compensated_mit_motor_targets = 7;
-        // ArmApiJointPositionCommand but with additional force compensation.
-        ArmApiCompensatedJointPositionCommand arm_api_compensated_joint_position_command = 8;
     }
 }
 
@@ -359,16 +366,16 @@ message SingleMotorTarget{
         int64 position = 3; // encoder position
         bool brake = 4;     // No matter set to true or false, brake will always be applied. Be aware that putting into brake mode might cause motor to lose position information.
         MitMotorTarget mit_target = 5;   // Not all motors support this.
-        FollowMotorTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
+        PosVelAccTarget follow_motor_target = 7;  // Not all motors support this. A more responsive position-following mode.
         SpeedWithMaxCurrent speed_with_max_current = 8; // Not all motors support this. Speed command but with max current limit.
         PosVelAccTarget pos_with_trapezoidal_velocity = 9; // Not all motors support this. A position mode based on trapezoidal speed planning.
     }
 }
 
 message PosVelAccTarget {
-    double position = 1;     // rad
-    double velocity = 2;     // rad/s
-    double acceleration = 3; // rad/s²
+    optional double position = 1;     // rad
+    optional double velocity = 2;     // rad/s
+    optional double acceleration = 3; // rad/s²
 }
 
 message SpeedWithMaxCurrent {
@@ -376,10 +383,10 @@ message SpeedWithMaxCurrent {
     double max_current = 2;   // A
 }
 
-message FollowMotorTarget {
-    reserved 3;
-    double speed = 2;   // rad/s
-    double position = 4; // rad
+message PosVelTorqueTarget {
+    double position = 1; // rad
+    double velocity = 2; // rad/s
+    double torque = 3;   // Nm
 }
 
 message MitMotorTarget {
