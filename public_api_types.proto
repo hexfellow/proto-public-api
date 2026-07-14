@@ -46,6 +46,7 @@ enum RobotType {
 
     ////// Bases //////
     RtTriggerA3Lr1 = 1;
+    RtMaverOgH1 = 6;
     RtMaverX4H1 = 30;
     RtMaverL4H1 = 31;
     RtArk2Lr1 = 5;
@@ -78,7 +79,7 @@ enum RobotType {
     RtPureForwardOnlyV2 = 101;
 
     ////// Deprecated //////
-    reserved 2, 4, 6 to 18, 20, 21, 24, 100;
+    reserved 2, 4, 7 to 18, 20, 21, 24, 100;
 }
 
 enum SecondaryDeviceType {
