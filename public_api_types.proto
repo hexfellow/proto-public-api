@@ -60,6 +60,9 @@ enum RobotType {
     RtArmArcherX7h1 = 29;
     RtArmEmpty = 36;
     RtArmFeedbackDmX8_H1 = 37;
+    RtArmFireflyY6_H2_10 = 38;
+    RtArmFireflyY6_H2_40 = 39;
+
     ////// Lifts //////
     // Lifts are considered as arms, and can only be controlled by position with max speed.
     RtTheta2 = 32;
