@@ -23,6 +23,14 @@ enum OvertakenMode {
     OrCalibrating = 3;
     OrMotorError = 4;
     OrBatteryError = 5;
+    // Physical emergency stop button pressed on the robot/controller.
+    OrEmergencyStopButton = 6;
+    // Emergency stop triggered by another controller through broadcast.
+    OrBroadcastEmergencyStop = 7;
+    // Gamepad-triggered emergency stop (e.g. both triggers pressed).
+    OrGamepadEmergencyStop = 8;
+    // Limit switch triggered. Mainly for lifts.
+    OrLimitSwitch = 9;
 }
 
 message TryExitOvertake{}
@@ -31,6 +39,20 @@ message EnterStandbyMode{}
 
 message OvertakenReason {
     OvertakenMode overtaken_mode = 1;
+    optional string human_readable_reason = 2;
+}
+
+// Fatal error mode. Only meaningful when robot_mode is RmFatalError.
+enum FatalErrorMode {
+    FeUnknown = 0;
+    FeMotorError = 1;
+    FeBatteryError = 2;
+    // Physical emergency stop button is pressed / stuck.
+    FeEmergencyStopButton = 3;
+}
+
+message FatalErrorReason {
+    FatalErrorMode fatal_error_mode = 1;
     optional string human_readable_reason = 2;
 }
 

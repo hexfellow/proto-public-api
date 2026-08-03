@@ -48,6 +48,9 @@ message APIUp {
     // Current overtaken reason. Only present when robot_mode is RmOvertaken.
     // 当前被接管原因。仅当机器人模式为 RmOvertaken 时出现。
     optional OvertakenReason overtaken_reason = 24;
+    // Current fatal error reason. Only present when robot_mode is RmFatalError.
+    // 当前致命错误原因。仅当机器人模式为 RmFatalError 时出现。
+    optional FatalErrorReason fatal_error_reason = 27;
     // Current session holder. 0 stands for no session holder.
     // 当前控制权持有者。0 表示没有控制权持有者。
     uint32 session_holder = 25;
