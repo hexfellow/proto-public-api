@@ -27,3 +27,4 @@
 ## 1.6
 - Added RebootRequest message.
 - Removed can forwarding related stuff.
+- Added RobotType RtMaverL4H2.
